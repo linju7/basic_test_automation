@@ -8,6 +8,7 @@ services:
     volumes:
       - .:/app
       - ./test-results:/app/test-results
+    env_file: .env
     environment:
       - PYTHONPATH=/app
     command: python -m pytest tests/ -v
@@ -19,6 +20,7 @@ services:
     volumes:
       - .:/app
       - ./test-results:/app/test-results
+    env_file: .env
     environment:
       - PYTHONPATH=/app
     stdin_open: true
