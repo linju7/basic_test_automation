@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # 테스트 실행용
+  playwright-tests:
+    build: .
+    container_name: playwright-automation
+    volumes:
+      - .:/app
+      - ./test-results:/app/test-results
+    environment:
+      - PYTHONPATH=/app
+    command: python -m pytest tests/ -v
+    
+  # 개발용 (대화형)
+  playwright-dev:
+    build: .
+    container_name: playwright-dev
+    volumes:
+      - .:/app
+      - ./test-results:/app/test-results
+    environment:
+      - PYTHONPATH=/app
+    stdin_open: true
+    tty: true
+    command: /bin/bash 
