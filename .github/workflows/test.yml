@@ -15,11 +15,17 @@ jobs:
     - name: 코드 체크아웃
       uses: actions/checkout@v4
     
+    - name: Docker Compose 설치
+      run: |
+        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        docker-compose --version
+    
     - name: 자동화 테스트 실행
       env:
         TEST_ENV: alpha
       run: |
-        docker compose up --build --abort-on-container-exit playwright-tests
+        docker-compose up --build --abort-on-container-exit playwright-tests
     
     - name: 테스트 결과 업로드
       uses: actions/upload-artifact@v4

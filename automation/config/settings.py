@@ -34,9 +34,17 @@ class Settings:
     
     @classmethod
     def get_account(cls, account_type: str) -> str:
-        value = os.getenv(account_type.upper())
+        if account_type == "id":
+            # 환경별로 REAL_ID, STAGE_ID, ALPHA_ID 등에서 불러옴
+            env_key = f"{cls.ENVIRONMENT.upper()}_ID"
+        elif account_type == "password":
+            # 모든 환경에서 PASSWORD로 고정
+            env_key = "PASSWORD"
+        else:
+            raise ValueError("account_type은 'id' 또는 'password'만 허용됩니다.")
+        value = os.getenv(env_key)
         if not value:
-            raise ValueError(f"Environment variable {account_type.upper()} not found")
+            raise ValueError(f"환경변수 {env_key}가 설정되어 있지 않습니다")
         return value
 
 
