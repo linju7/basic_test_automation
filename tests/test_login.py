@@ -12,3 +12,5 @@ def test_login(page: Page):
     
     # 로그인 성공 확인 (페이지 제목이나 특정 요소로 확인)
     assert "worksmobile" in page.url 
+
+    page.pause()
