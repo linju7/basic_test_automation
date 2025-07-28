@@ -1,17 +1,10 @@
-import pytest
-from playwright.sync_api import Page
-from automation.core.auth import login
+# tests/test_user.py
 from automation.modules.user.create import create_user
+from automation.modules.user.update import update_user
+from tests.conftest import app_state, logged_in_page
 
-def test_create_user(page: Page):
-    """구성원 추가 성공 모달이 정상적으로 노출되는지 확인한다."""
+def test_create_user(logged_in_page):
+    assert create_user(logged_in_page, app_state=app_state), "구성원 추가 실패"
 
-    # 1. 로그인
-    login(page)
-
-    # 2. 구성원 추가
-    create_user(page, app_state=None)
-
-    # 3. 구성원 추가 완료 모달 확인
-    page.wait_for_selector("div.ly_member_added h3.tit:text('구성원 추가 완료')", timeout=5000)
-    assert page.locator("div.ly_member_added h3.tit:text('구성원 추가 완료')").count() > 0, "구성원 추가 완료 모달이 나타나야 합니다."
+def test_update_user(logged_in_page):
+    assert update_user(logged_in_page, app_state=app_state), "구성원 정보 수정 실패"

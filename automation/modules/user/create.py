@@ -92,7 +92,7 @@ def fill_user_info(page, app_state=None):
 
 
 def create_user(page, app_state=None):
-    """구성원 추가 플로우를 순차적으로 실행한다."""
+    """구성원 추가 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
     page.goto(settings.get_users_url())
     page.wait_for_selector(BTN_ADD_MEMBER, timeout=5000)
 
@@ -106,3 +106,13 @@ def create_user(page, app_state=None):
         page.locator(BTN_ADD).click()
     if page.locator(BTN_CONFIRM).count() > 0:
         page.locator(BTN_CONFIRM).click()
+
+    # 성공 모달이 나타나는지 체크
+    try:
+        page.wait_for_selector("div.ly_member_added h3.tit:text('구성원 추가 완료')", timeout=5000)
+        # "확인" 버튼 클릭
+        if page.locator("div.ly_member_added button.lw_btn:text('확인')").count() > 0:
+            page.locator("div.ly_member_added button.lw_btn:text('확인')").click()
+        return True
+    except Exception:
+        return False
