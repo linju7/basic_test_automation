@@ -7,20 +7,17 @@ INPUT_SEARCH = '#search_input'
 USER_NAME_CELL = 'div.lw_td.user_name'
 BTN_MODIFY_MEMBER = 'button.lw_btn_point:text-is("구성원 수정")'
 BTN_SAVE = 'button.lw_btn_point:text-is("저장")'
-MODAL_UPDATE_DONE = "div.ly_member_updated h3.tit:text('구성원 정보 수정 완료')"
 
 
 def access_user_detail(page: Page, user_id: str):
-    """구성원 상세 페이지로 이동 후 '구성원 수정' 버튼 클릭"""
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
     page.fill(INPUT_SEARCH, user_id)
+    page.wait_for_timeout(2000)
     page.locator(INPUT_SEARCH).press('Enter')
-    page.wait_for_selector(USER_NAME_CELL, timeout=10000)
     page.locator(USER_NAME_CELL).first.click()
     page.wait_for_selector(BTN_MODIFY_MEMBER, timeout=10000)
-    page.locator(BTN_MODIFY_MEMBER).click()
     return page
 
 
@@ -89,6 +86,8 @@ def update_user(page: Page, app_state=None):
     if not user_id:
         raise ValueError("app_state.global_user_id가 필요합니다.")
     access_user_detail(page, user_id)
+    page.locator(BTN_MODIFY_MEMBER).click()
+    
     update_user_info(page, app_state)
     if page.locator(BTN_SAVE).count() > 0:
         page.locator(BTN_SAVE).click()
