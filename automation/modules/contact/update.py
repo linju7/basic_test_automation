@@ -70,12 +70,12 @@ def open_edit_layer(page):
     if page.locator(BTN_DETAIL).count() > 0:
         page.locator(BTN_DETAIL).click()
 
-def fill_contact_update_fields(page):
+def fill_contact_update_fields(page, app_state=None):
     timestamp = datetime.now().strftime("%m%d%H%M")
     safe_fill(page, INPUT_LASTNAME, "연락처자동화(수정됨)")
     safe_fill(page, INPUT_FIRSTNAME, f"{timestamp}(수정됨)")
     if app_state is not None:
-        app_state.contact_name = f"연락처자동화(수정됨)_{timestamp}(수정됨)"
+        app_state.contact_name = f"연락처자동화(수정됨){timestamp}(수정됨)"
     safe_fill(page, INPUT_NICKNAME, "자동화닉네임(수정됨)")
     safe_fill(page, INPUT_ORG, "자동화소속(수정됨)")
     safe_fill(page, INPUT_DEPT, "자동화부서(수정됨)")
@@ -100,7 +100,6 @@ def fill_contact_update_fields(page):
 def save_contact_update(page):
     page.wait_for_selector(BTN_SAVE, timeout=2000)
     page.locator(BTN_SAVE).first.click()
-    page.pause()
 
 # =====================
 # 메인 플로우 함수
@@ -109,6 +108,6 @@ def update_contact(page, app_state=None):
     """연락처를 검색 후 상세 진입, 수정 레이어에서 값 변경 후 저장한다."""
     search_contact(page, app_state.contact_name)
     open_edit_layer(page)
-    fill_contact_update_fields(page)
+    fill_contact_update_fields(page, app_state)
     save_contact_update(page)
     return True
