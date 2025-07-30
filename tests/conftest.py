@@ -11,5 +11,6 @@ def logged_in_page(browser):
 class AppState:
     def __init__(self):
         self.global_user_id = None
+        self.group_name = None
 
 app_state = AppState()

@@ -41,11 +41,13 @@ def wait_group_add_layer(page):
         raise
 
 
-def fill_group_name(page, group_name):
+def fill_group_name(page, group_name, app_state=None):
     """그룹명 입력란에 값을 채운다."""
     input_box = page.locator(INPUT_GROUP_NAME)
     if input_box.count() > 0:
         input_box.fill(group_name)
+        if app_state is not None:
+            app_state.group_name = group_name
         return True
     print("[실패] 그룹명 입력란을 찾을 수 없음")
     return False
@@ -88,7 +90,7 @@ def create_group(page, app_state=None):
         return False
     timestamp = datetime.now().strftime("%m%d%H%M")
     group_name = f"자동화_{timestamp}"
-    if not fill_group_name(page, group_name):
+    if not fill_group_name(page, group_name, app_state):
         return False
     if not fill_master(page):
         return False
