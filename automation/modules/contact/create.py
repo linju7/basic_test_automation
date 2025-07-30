@@ -62,8 +62,10 @@ def click_detail_button(page):
 def fill_contact_info(page, app_state=None):
     """외부 연락처 필드에 값을 입력한다."""
     timestamp = datetime.now().strftime("%m%d%H%M")
-    safe_fill(page, INPUT_LASTNAME, "자동화")
+    safe_fill(page, INPUT_LASTNAME, "연락처자동화_")
     safe_fill(page, INPUT_FIRSTNAME, timestamp)
+    if app_state is not None:
+        app_state.contact_name = f"연락처자동화_{timestamp}"
     safe_fill(page, INPUT_NICKNAME, "자동화닉네임")
     safe_fill(page, INPUT_ORG, "자동화소속")
     safe_fill(page, INPUT_DEPT, "자동화부서")
@@ -91,7 +93,9 @@ def fill_contact_info(page, app_state=None):
 def click_save_button(page):
     """'저장' 버튼을 클릭한다."""
     if page.locator(BTN_SAVE).count() > 0:
+        page.wait_for_timeout(2000)
         page.locator(BTN_SAVE).first.click()
+        page.wait_for_timeout(2000)
         return True
     return False
 
