@@ -18,6 +18,12 @@ class Settings:
         "real": "https://admin.worksmobile.com/member/users"
     }
 
+    GROUP_URLS = {
+        "alpha": "https://alpha-admin.worksmobile.com/member/groups",
+        "stage": "https://stage-admin.worksmobile.com/member/groups",
+        "real": "https://admin.worksmobile.com/member/groups"
+    }
+
     @classmethod
     def get_base_url(cls) -> str:
         """현재 환경에 맞는 기본 URL 반환"""
