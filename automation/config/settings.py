@@ -30,6 +30,12 @@ class Settings:
         "real" : "https://admin.worksmobile.com/member/org-units"
     }
 
+    CONTACT_URLS = {
+        "alpha": "https://alpha-contact.worksmobile.com/v2/p/shared/contact",
+        "stage": "https://stage.contact.worksmobile.com/v2/p/shared/contact",
+        "real" : "https://contact.worksmobile.com/v2/p/shared/contact"
+    }
+
     @classmethod
     def get_base_url(cls) -> str:
         """현재 환경에 맞는 기본 URL 반환"""
