@@ -36,6 +36,24 @@ class Settings:
         "real" : "https://contact.worksmobile.com/v2/p/shared/contact"
     }
 
+    POSITION_URLS = {
+        "alpha": "https://alpha-admin.worksmobile.com/member/job/positions",
+        "stage": "https://stage-admin.worksmobile.com/member/job/positions",
+        "real" : "https://admin.worksmobile.com/member/job/positions"
+    }
+
+    LEVEL_URLS = {
+        "alpha": "https://alpha-admin.worksmobile.com/member/job/levels",
+        "stage": "https://stage-admin.worksmobile.com/member/job/levels",
+        "real" : "https://admin.worksmobile.com/member/job/levels"
+    }
+
+    USERTYPE_URLS = {
+        "alpha": "https://alpha-admin.worksmobile.com/member/job/user-types",
+        "stage": "https://stage-admin.worksmobile.com/member/job/user-types",
+        "real" : "https://admin.worksmobile.com/member/job/user-types"
+    }
+
     @classmethod
     def get_base_url(cls) -> str:
         """현재 환경에 맞는 기본 URL 반환"""

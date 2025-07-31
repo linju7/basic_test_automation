@@ -14,5 +14,6 @@ class AppState:
         self.group_name = None
         self.org_name = None
         self.contact_name = None
+        self.usertype_name = None
 
 app_state = AppState()
