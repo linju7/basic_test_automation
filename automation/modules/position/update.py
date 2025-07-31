@@ -66,7 +66,7 @@ def click_save_button(page):
     btn = page.locator(BTN_SAVE)
     if btn.count() > 0:
         btn.first.click()
-        page.wait_for_timeout(2000)
+        page.wait_for_selector(BTN_EDIT, timeout=5000)
         return True
     print("[실패] '저장' 버튼을 찾을 수 없음")
     return False
