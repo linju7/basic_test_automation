@@ -54,6 +54,12 @@ class Settings:
         "real" : "https://admin.worksmobile.com/member/job/user-types"
     }
 
+    STATUS_URLS = {
+        "alpha": "https://alpha-admin.worksmobile.com/member/status",
+        "stage": "https://stage-admin.worksmobile.com/member/status",
+        "real" : "https://admin.worksmobile.com/member/status"
+    }
+
     @classmethod
     def get_base_url(cls) -> str:
         """현재 환경에 맞는 기본 URL 반환"""

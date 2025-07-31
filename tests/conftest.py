@@ -17,5 +17,6 @@ class AppState:
         self.position_name = None
         self.level_name = None
         self.usertype_name = None
+        self.status_name = None
 
 app_state = AppState()
