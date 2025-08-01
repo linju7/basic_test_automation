@@ -107,7 +107,6 @@ def confirm_save_changes(page):
 # =====================
 def update_status(page, app_state=None):
     """마지막 상태 항목을 수정한다. 성공 시 True, 실패 시 False 반환."""
-    open_status_page(page)
     if not click_edit_button(page):
         return False
     if not fill_status_fields_for_update(page, app_state):

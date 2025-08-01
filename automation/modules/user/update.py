@@ -2,23 +2,8 @@ from automation.config.settings import settings
 from playwright.sync_api import Page
 
 # 주요 셀렉터 상수
-BTN_SEARCH = 'button.btn_search'
-INPUT_SEARCH = '#search_input'
-USER_NAME_CELL = 'div.lw_td.user_name'
 BTN_MODIFY_MEMBER = 'button.lw_btn_point:text-is("구성원 수정")'
 BTN_SAVE = 'button.lw_btn_point:text-is("저장")'
-
-
-def access_user_detail(page: Page, user_id: str):
-    page.wait_for_selector(BTN_SEARCH, timeout=10000)
-    page.locator(BTN_SEARCH).click()
-    page.wait_for_selector(INPUT_SEARCH, timeout=10000)
-    page.fill(INPUT_SEARCH, user_id)
-    page.wait_for_timeout(2000)
-    page.locator(INPUT_SEARCH).press('Enter')
-    page.locator(USER_NAME_CELL).first.click()
-    page.wait_for_selector(BTN_MODIFY_MEMBER, timeout=10000)
-    return page
 
 
 def update_user_info(page: Page, app_state=None):
@@ -81,11 +66,7 @@ def update_user_info(page: Page, app_state=None):
 
 
 def update_user(page: Page, app_state=None):
-    """구성원 정보 수정 플로우를 순차적으로 실행한다. 저장 버튼 클릭 시 True 반환."""
-    user_id = app_state.global_user_id if app_state and hasattr(app_state, 'global_user_id') else None
-    if not user_id:
-        raise ValueError("app_state.global_user_id가 필요합니다.")
-    access_user_detail(page, user_id)
+    page.wait_for_selector(BTN_MODIFY_MEMBER, timeout=10000)
     page.locator(BTN_MODIFY_MEMBER).click()
     
     update_user_info(page, app_state)
