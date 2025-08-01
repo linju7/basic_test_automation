@@ -8,6 +8,48 @@ BTN_ADD = 'button.lw_btn_point:text-is("추가")'
 BTN_CONFIRM = 'button.lw_btn:text-is("확인")'
 
 
+def create_user_info():
+    """사용자 입력 데이터를 생성한다."""
+    timestamp = datetime.now().strftime("%m%d%H%M")
+    user_id = "junil_" + timestamp
+    
+    user_info = {
+        "timestamp": timestamp,
+        "user_id": user_id,
+        "basic_fields": {
+            "last_name": "자동화_",
+            "first_name": timestamp,
+            "nickname": "자동화_닉네임",
+            "internal_number": f"P-{timestamp}",
+            "phone_number": f"T-{timestamp}",
+            "workplace": "자동화_근무처",
+            "task": "자동화_담당업무",
+            "employee_number": f"자동화_{timestamp}",
+            "birthday": "1999. 12. 31",
+            "hired_date": "2000. 01. 01"
+        },
+        "multilingual_fields": {
+            "japanese_last": "일본어성",
+            "japanese_first": "일본어이름", 
+            "english_last": "영어성",
+            "english_first": "영어이름",
+            "korean_last": "한국어성",
+            "korean_first": "한국어이름",
+            "simplified_chinese_last": "간체성",
+            "simplified_chinese_first": "간체이름",
+            "traditional_chinese_last": "번체성",
+            "traditional_chinese_first": "번체이름"
+        },
+        "email_fields": {
+            "sub_email": f"sub_email_{timestamp}",
+            "private_email": f"private_email_{timestamp}",
+            "private_domain": "private.domain"
+        }
+    }
+    
+    return user_info
+
+
 def safe_fill(page, selector, value):
     """해당 selector가 존재할 때만 값을 입력한다."""
     if page.locator(selector).count() > 0:
@@ -22,11 +64,13 @@ def wait_and_click(page, selector, timeout=5000):
 
 def fill_user_info(page, app_state=None):
     """사용자 정보 입력 폼을 채운다."""
-    timestamp = datetime.now().strftime("%m%d%H%M")
-    user_id = "junil_" + timestamp
-
+    # 사용자 정보 객체 생성
+    user_info = create_user_info()
+    
+    # app_state에 저장
     if app_state is not None:
-        app_state.global_user_id = user_id
+        app_state.global_user_id = user_info["user_id"]
+        app_state.user_info = user_info
 
     # 모든 항목 표시 버튼 클릭
     if page.locator('button.opt_toggle.fold').count() > 0:
@@ -35,18 +79,19 @@ def fill_user_info(page, app_state=None):
             button.click()
 
     # 기본 필드 입력
+    basic = user_info["basic_fields"]
     basic_fields = [
-        ("성", 'input.lw_input[placeholder="성"][maxlength="80"]', "자동화_"),
-        ("이름", 'input.lw_input[placeholder="이름"][maxlength="80"]', timestamp),
-        ("닉네임", 'input.lw_input[placeholder="닉네임"]', "자동화_닉네임"),
-        ("ID", 'input.lw_input[placeholder="ID"]', user_id),
-        ("사내 번호", 'input.lw_input[placeholder="사내 번호"]', f"P-{timestamp}"),
-        ("전화번호", 'input.lw_input[placeholder="전화번호"]', f"T-{timestamp}"),
-        ("근무처", 'input.lw_input[placeholder="근무처"]', "자동화_근무처"),
-        ("담당 업무", 'input.lw_input[placeholder="담당 업무"]', "자동화_담당업무"),
-        ("사원 번호", 'input.lw_input[placeholder="사원 번호"]', f"자동화_{timestamp}"),
-        ("생일", 'input.lw_input[name="birthday"]', "1999. 12. 31"),
-        ("입사일", 'input.lw_input[name="hiredDate"]', "2000. 01. 01")
+        ("성", 'input.lw_input[placeholder="성"][maxlength="80"]', basic["last_name"]),
+        ("이름", 'input.lw_input[placeholder="이름"][maxlength="80"]', basic["first_name"]),
+        ("닉네임", 'input.lw_input[placeholder="닉네임"]', basic["nickname"]),
+        ("ID", 'input.lw_input[placeholder="ID"]', user_info["user_id"]),
+        ("사내 번호", 'input.lw_input[placeholder="사내 번호"]', basic["internal_number"]),
+        ("전화번호", 'input.lw_input[placeholder="전화번호"]', basic["phone_number"]),
+        ("근무처", 'input.lw_input[placeholder="근무처"]', basic["workplace"]),
+        ("담당 업무", 'input.lw_input[placeholder="담당 업무"]', basic["task"]),
+        ("사원 번호", 'input.lw_input[placeholder="사원 번호"]', basic["employee_number"]),
+        ("생일", 'input.lw_input[name="birthday"]', basic["birthday"]),
+        ("입사일", 'input.lw_input[name="hiredDate"]', basic["hired_date"])
     ]
     for _, selector, value in basic_fields:
         safe_fill(page, selector, value)
@@ -64,29 +109,31 @@ def fill_user_info(page, app_state=None):
         position_select.select_option(value=first_value)
 
     # 다국어 필드 입력
+    multilingual = user_info["multilingual_fields"]
     multilingual_fields = [
-        ("姓(日本語)", 'input.lw_input[placeholder="姓(日本語)"]', "일본어성"),
-        ("名(日本語)", 'input.lw_input[placeholder="名(日本語)"]', "일본어이름"),
-        ("Last", 'input.lw_input[placeholder="Last"]', "영어성"),
-        ("First", 'input.lw_input[placeholder="First"]', "영어이름"),
-        ("성", 'input.lw_input[placeholder="성"][maxlength="100"]', "한국어성"),
-        ("이름", 'input.lw_input[placeholder="이름"][maxlength="100"]', "한국어이름"),
-        ("姓(简体中文)", 'input.lw_input[placeholder="姓(简体中文)"]', "간체성"),
-        ("名(简体中文)", 'input.lw_input[placeholder="名(简体中文)"]', "간체이름"),
-        ("姓(繁體中文)", 'input.lw_input[placeholder="姓(繁體中文)"]', "번체성"),
-        ("名(繁體中文)", 'input.lw_input[placeholder="名(繁體中文)"]', "번체이름"),
+        ("姓(日本語)", 'input.lw_input[placeholder="姓(日本語)"]', multilingual["japanese_last"]),
+        ("名(日本語)", 'input.lw_input[placeholder="名(日本語)"]', multilingual["japanese_first"]),
+        ("Last", 'input.lw_input[placeholder="Last"]', multilingual["english_first"]),  # 순서 바꿈 (Last=이름)
+        ("First", 'input.lw_input[placeholder="First"]', multilingual["english_last"]),  # 순서 바꿈 (First=성)
+        ("성", 'input.lw_input[placeholder="성"][maxlength="100"]', multilingual["korean_last"]),
+        ("이름", 'input.lw_input[placeholder="이름"][maxlength="100"]', multilingual["korean_first"]),
+        ("姓(简体中文)", 'input.lw_input[placeholder="姓(简体中文)"]', multilingual["simplified_chinese_last"]),
+        ("名(简体中文)", 'input.lw_input[placeholder="名(简体中文)"]', multilingual["simplified_chinese_first"]),
+        ("姓(繁體中文)", 'input.lw_input[placeholder="姓(繁體中文)"]', multilingual["traditional_chinese_last"]),
+        ("名(繁體中文)", 'input.lw_input[placeholder="名(繁體中文)"]', multilingual["traditional_chinese_first"]),
     ]
     for _, selector, value in multilingual_fields:
         safe_fill(page, selector, value)
 
     # 보조 이메일 추가
+    email = user_info["email_fields"]
     if page.locator('button.generate', has_text="보조 이메일 추가").count() > 0:
         page.locator('button.generate', has_text="보조 이메일 추가").click()
-        safe_fill(page, 'input.lw_input.email_id[placeholder="보조 이메일"]', f"sub_email_{timestamp}")
+        safe_fill(page, 'input.lw_input.email_id[placeholder="보조 이메일"]', email["sub_email"])
 
     # 개인 이메일 입력
-    safe_fill(page, 'input.lw_input[placeholder="개인 이메일"]', f"private_email_{timestamp}")
-    safe_fill(page, 'input.lw_input[placeholder="직접 입력"]', "private.domain")
+    safe_fill(page, 'input.lw_input[placeholder="개인 이메일"]', email["private_email"])
+    safe_fill(page, 'input.lw_input[placeholder="직접 입력"]', email["private_domain"])
 
     return page
 

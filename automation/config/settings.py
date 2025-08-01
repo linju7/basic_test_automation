@@ -73,12 +73,12 @@ class Settings:
     @classmethod
     def get_account(cls, account_type: str) -> str:
         """환경 변수에서 계정 정보(id, password) 반환"""
-        if account_type == "id":
-            env_key = f"{cls.ENVIRONMENT.upper()}_ID"
+        if account_type == "domain":
+            env_key = f"{cls.ENVIRONMENT.upper()}_DOMAIN"
         elif account_type == "password":
             env_key = "PASSWORD"
         else:
-            raise ValueError("account_type은 'id' 또는 'password'만 허용됩니다.")
+            raise ValueError("account_type은 'domain' 또는 'password'만 허용됩니다.")
         value = os.getenv(env_key)
         if not value:
             raise ValueError(f"필수 환경변수 '{env_key}'가 설정되어 있지 않습니다.")
