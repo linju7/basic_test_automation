@@ -18,6 +18,11 @@ class AppState:
         self.level_name = None
         self.usertype_name = None
         self.status_name = None
+
         self.user_info = None
+        self.group_info = None
+        self.org_info = None
+        self.contact_info = None
+    
 
 app_state = AppState()

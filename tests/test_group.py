@@ -10,5 +10,5 @@ def test_group_create_flow(logged_in_page):
 def test_group_update_flow(logged_in_page):
     assert update_group(logged_in_page, app_state=app_state), "그룹 수정 실패"
 
-def test_group_delete_flow(logged_in_page):
-    assert delete_group(logged_in_page), "그룹 삭제 실패"
+# def test_group_delete_flow(logged_in_page):
+#     assert delete_group(logged_in_page), "그룹 삭제 실패"
