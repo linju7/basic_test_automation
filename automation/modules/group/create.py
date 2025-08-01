@@ -12,6 +12,20 @@ INPUT_MAILING_LIST = 'input.lw_input.w_limit[placeholder="ID"]'
 BTN_ADD = 'div.ly_member_add button.lw_btn_point:text-is("추가")'
 
 
+def create_group_info():
+    """그룹 입력 데이터를 생성한다."""
+    timestamp = datetime.now().strftime("%m%d%H%M")
+    
+    group_info = {
+        "timestamp": timestamp,
+        "group_name": f"자동화_{timestamp}",
+        "description": f"자동화_설명_{timestamp}",
+        "mailing_id": f"dl_{timestamp}"
+    }
+    
+    return group_info
+
+
 def open_group_add_dropdown(page):
     """그룹 추가 드롭다운 버튼을 클릭한다."""
     page.wait_for_selector(BTN_GROUP_ADD, timeout=5000)
@@ -70,7 +84,6 @@ def fill_master(page, app_state=None):
     # global_user_id가 있으면 우선 사용, 없으면 기존 설정값 사용
     if app_state and hasattr(app_state, 'global_user_id') and app_state.global_user_id:
         master_id = app_state.global_user_id
-        print(f"[정보] global_user_id 사용: {master_id}")
     else:
         master_id = "automation" + settings.get_account('domain')  # id -> domain으로 변경
     
@@ -122,17 +135,20 @@ def create_group(page, app_state=None):
     except Exception:
         return False
     
-    # 타임스탬프 생성
-    timestamp = datetime.now().strftime("%m%d%H%M")
+    # 그룹 정보 객체 생성
+    group_info = create_group_info()
+    
+    # app_state에 저장
+    if app_state is not None:
+        app_state.group_info = group_info
+        app_state.group_name = group_info["group_name"]
     
     # 그룹명 입력
-    group_name = f"자동화_{timestamp}"
-    if not fill_group_name(page, group_name, app_state):
+    if not fill_group_name(page, group_info["group_name"], app_state):
         return False
     
     # 설명 입력
-    description = f"자동화_설명_{timestamp}"
-    if not fill_description(page, description):
+    if not fill_description(page, group_info["description"]):
         return False
     
     # 마스터 입력
@@ -140,8 +156,7 @@ def create_group(page, app_state=None):
         return False
     
     # 메일링 리스트 ID 입력
-    mailing_id = f"dl_{timestamp}"
-    if not fill_mailing_list(page, mailing_id):
+    if not fill_mailing_list(page, group_info["mailing_id"]):
         return False
     
     # 추가 버튼 클릭
