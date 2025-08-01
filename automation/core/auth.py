@@ -11,7 +11,7 @@ def login(page: Page):
     """
     Works Mobile 서비스에 로그인하고, '전체 서비스' 버튼이 보일 때까지 대기한다.
     """
-    username = settings.get_account("id")
+    username = "automation" + settings.get_account("id")
     password = settings.get_account("password")
 
     page.goto(settings.get_base_url())

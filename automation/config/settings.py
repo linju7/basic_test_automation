@@ -74,7 +74,7 @@ class Settings:
     def get_account(cls, account_type: str) -> str:
         """환경 변수에서 계정 정보(id, password) 반환"""
         if account_type == "id":
-            env_key = f"{cls.ENVIRONMENT.upper()}_ID"
+            env_key = f"{cls.ENVIRONMENT.upper()}_DOMAIN"
         elif account_type == "password":
             env_key = "PASSWORD"
         else:
