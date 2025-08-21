@@ -1,5 +1,6 @@
 from automation.config.settings import settings
 from datetime import datetime
+from automation.core.safe_fill import safe_fill
 
 # =====================
 # 셀렉터 상수 (Contact Update Page)
@@ -43,18 +44,9 @@ INPUT_BIRTHDAY_DATE = 'input[type="date"].date'
 BTN_ADDRESS_SELECT = 'div.lc_article:has(span.lc_lt:text("주소")) .selectbox a.status'
 DROPDOWN_ADDRESS_DIRECT = 'ul[style*="translateZ"] li a:has-text("직접입력")'
 
-# =====================
-# 유틸 함수
-# =====================
-def safe_fill(page, selector, value):
-    """해당 selector가 존재할 때만 값을 입력한다."""
-    if page.locator(selector).count() > 0:
-        page.locator(selector).fill(value)
 
-# =====================
-# 단계별 함수 분리
-# =====================
 def search_contact(page, contact_name):
+    """연락처 검색"""
     page.wait_for_selector(SEARCH_INPUT, timeout=5000)
     page.locator(SEARCH_INPUT).fill(contact_name)
     page.locator(SEARCH_SUBMIT).click()
@@ -62,7 +54,11 @@ def search_contact(page, contact_name):
     page.locator(SEARCH_RESULT_NAME).first.click()
     page.wait_for_selector(DETAIL_NAME, timeout=3000)
 
+    return True
+
+
 def open_edit_layer(page):
+    """상세 뷰 수정 클릭"""
     page.locator(DETAIL_SHOW_MORE).click()
     page.wait_for_selector(DETAIL_MORE_MENU, state="visible", timeout=2000)
     page.locator(DETAIL_EDIT).click()
@@ -70,18 +66,25 @@ def open_edit_layer(page):
     if page.locator(BTN_DETAIL).count() > 0:
         page.locator(BTN_DETAIL).click()
 
+    return True
+
+
 def fill_contact_update_fields(page, app_state=None):
+    """수정 레이어 값 입력"""
     timestamp = datetime.now().strftime("%m%d%H%M")
     safe_fill(page, INPUT_LASTNAME, "연락처자동화(수정됨)")
     safe_fill(page, INPUT_FIRSTNAME, f"{timestamp}(수정됨)")
+    # 조회를 위해 업데이트된 이름 저장 필요 -> app_state 에 기록 
     if app_state is not None:
         app_state.contact_name = f"연락처자동화(수정됨){timestamp}(수정됨)"
+
     safe_fill(page, INPUT_NICKNAME, "자동화닉네임(수정됨)")
     safe_fill(page, INPUT_ORG, "자동화소속(수정됨)")
     safe_fill(page, INPUT_DEPT, "자동화부서(수정됨)")
     safe_fill(page, INPUT_POSITION, "자동화직책(수정됨)")
     safe_fill(page, INPUT_PHONE, "P-12340000")
     safe_fill(page, INPUT_EMAIL, "automation@email.test.mod")
+
     if page.locator(BTN_ADDRESS_SELECT).count() > 0:
         page.locator(BTN_ADDRESS_SELECT).click()
         page.wait_for_selector(DROPDOWN_ADDRESS_DIRECT, timeout=2000)
@@ -90,6 +93,7 @@ def fill_contact_update_fields(page, app_state=None):
             page.wait_for_selector(INPUT_ADDRESS_TYPE, timeout=2000)
             if page.locator(INPUT_ADDRESS_TYPE).count() > 0:
                 safe_fill(page, INPUT_ADDRESS_TYPE, "자동화주소종류(수정됨)")
+
     safe_fill(page, INPUT_ZIP, "1230000")
     safe_fill(page, INPUT_ADDRESS, "자동화주소(수정됨)")
     safe_fill(page, INPUT_HOMEPAGE, "automation.url(수정됨)")
@@ -97,17 +101,28 @@ def fill_contact_update_fields(page, app_state=None):
     safe_fill(page, INPUT_MESSENGER, "automation_sns_mod")
     safe_fill(page, INPUT_MEMO, "자동화메모(수정됨)")
 
+    return True
+
 def save_contact_update(page):
+    """수정 레이어 저장 클릭"""
     page.wait_for_selector(BTN_SAVE, timeout=2000)
     page.locator(BTN_SAVE).first.click()
+
+    return True
+
 
 # =====================
 # 메인 플로우 함수
 # =====================
 def update_contact(page, app_state=None):
     """연락처를 검색 후 상세 진입, 수정 레이어에서 값 변경 후 저장한다."""
-    search_contact(page, app_state.contact_name)
-    open_edit_layer(page)
-    fill_contact_update_fields(page, app_state)
-    save_contact_update(page)
+    # app_state 에 저장된 연락처 이름을 불러와서 검색에 사용 (저장에 문제가 있는 경우 검색되지 않음 -> create 파일 참고)
+    if not search_contact(page, app_state.contact_name):
+        return False
+    if not open_edit_layer(page):
+        return False
+    if not fill_contact_update_fields(page, app_state):
+        return False
+    if not save_contact_update(page):
+        return False
     return True

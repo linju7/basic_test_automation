@@ -6,12 +6,15 @@ import os
 class Settings:
     """환경별 URL 및 계정 정보를 관리하는 설정 클래스"""
 
+    # 테스트 서버 -> .env의 환경설정 값을 불러오고, 설정되지 않은 경우 real서버로 설정
     ENVIRONMENT = os.getenv("TEST_ENV", "real")
+
     BASE_URLS = {
         "alpha": "https://alpha-contact.worksmobile.com",
         "stage": "https://stage.contact.worksmobile.com",
         "real": "https://contact.worksmobile.com"
     }
+
     USERS_URLS = {
         "alpha": "https://alpha-admin.worksmobile.com/member/users",
         "stage": "https://stage-admin.worksmobile.com/member/users",
@@ -64,11 +67,6 @@ class Settings:
     def get_base_url(cls) -> str:
         """현재 환경에 맞는 기본 URL 반환"""
         return cls.BASE_URLS[cls.ENVIRONMENT]
-
-    @classmethod
-    def get_users_url(cls) -> str:
-        """현재 환경에 맞는 구성원 페이지 URL 반환"""
-        return cls.USERS_URLS[cls.ENVIRONMENT]
 
     @classmethod
     def get_account(cls, account_type: str) -> str:

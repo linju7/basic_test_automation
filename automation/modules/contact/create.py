@@ -1,13 +1,14 @@
 from automation.config.settings import settings
 from datetime import datetime
+from automation.core.safe_fill import safe_fill
 
 # =====================
 # 셀렉터 상수 (Contact Add Page)
 # =====================
 
 # 버튼/레이어
-BTN_NEW = 'a.has_dropdown'
-DROPDOWN_DIRECT = 'div.ly_context ul li a:has-text("외부 연락처 직접 입력")'
+BTN_NEW = 'a:has-text("새로 만들기")'
+DROPDOWN_DIRECT = 'div.ly_context ul li a:has-text("외부 연락처 직접 입력 ")'
 LAYER_CONTACT_ADD = 'div.layer_pd h3.lc_h3:text("외부 연락처 만들기")'
 BTN_DETAIL = 'div.fd_btnarea a:text-is("자세히 입력하기")'
 BTN_SAVE = 'div.btn_area button.btn_point:text-is("저장")'
@@ -33,26 +34,19 @@ INPUT_BIRTHDAY_DATE = 'input[type="date"].date'
 BTN_ADDRESS_SELECT = 'div.lc_article:has(span.lc_lt:text("주소")) .selectbox a.status'
 DROPDOWN_ADDRESS_DIRECT = 'ul[style*="translateZ"] li a:has-text("직접입력")'
 
-# =====================
-# 유틸 함수
-# =====================
-def safe_fill(page, selector, value):
-    """해당 selector가 존재할 때만 값을 입력한다."""
-    if page.locator(selector).count() > 0:
-        page.locator(selector).fill(value)
-
 
 def open_contact_add_layer(page):
+    """외부 연락처 추가 레이어 열기"""
     page.wait_for_selector(BTN_NEW, timeout=5000)
     page.locator(BTN_NEW).click()
     page.wait_for_selector(DROPDOWN_DIRECT, timeout=3000)
-    page.locator(DROPDOWN_DIRECT).first.click()  # 첫 번째만 클릭
+    page.locator(DROPDOWN_DIRECT).first.click()
     page.wait_for_selector(LAYER_CONTACT_ADD, timeout=5000)
     return True
 
 
 def click_detail_button(page):
-    """'자세히 입력하기' 버튼을 클릭한다."""
+    """'자세히 입력하기' 버튼을 클릭하기"""
     if page.locator(BTN_DETAIL).count() > 0:
         page.locator(BTN_DETAIL).click()
         return True
@@ -61,17 +55,23 @@ def click_detail_button(page):
 
 def fill_contact_info(page, app_state=None):
     """외부 연락처 필드에 값을 입력한다."""
+
+    # 유니크한 값 세팅을 위해 현재 시간값 사용
     timestamp = datetime.now().strftime("%m%d%H%M")
+
     safe_fill(page, INPUT_LASTNAME, "연락처자동화")
     safe_fill(page, INPUT_FIRSTNAME, timestamp)
+    # 조회를 위해 정보 저장 필요 -> app_state 에 기록 
     if app_state is not None:
         app_state.contact_name = f"연락처자동화{timestamp}"
+    
     safe_fill(page, INPUT_NICKNAME, "자동화닉네임")
     safe_fill(page, INPUT_ORG, "자동화소속")
     safe_fill(page, INPUT_DEPT, "자동화부서")
     safe_fill(page, INPUT_POSITION, "자동화직책")
     safe_fill(page, INPUT_PHONE, "P-1234")
     safe_fill(page, INPUT_EMAIL, "automation@email.test")
+
     # 주소: 드랍다운 열고 '직접입력' 선택
     if page.locator(BTN_ADDRESS_SELECT).count() > 0:
         page.locator(BTN_ADDRESS_SELECT).click()
@@ -81,6 +81,7 @@ def fill_contact_info(page, app_state=None):
             page.wait_for_selector(INPUT_ADDRESS_TYPE, timeout=2000)
             if page.locator(INPUT_ADDRESS_TYPE).count() > 0:
                 safe_fill(page, INPUT_ADDRESS_TYPE, "자동화주소종류")
+
     safe_fill(page, INPUT_ZIP, "123")
     safe_fill(page, INPUT_ADDRESS, "자동화주소")
     safe_fill(page, INPUT_HOMEPAGE, "automation.url")
@@ -100,14 +101,18 @@ def click_save_button(page):
     return False
 
 
+# =====================
+# 메인 플로우 함수
+# =====================
 def create_contact(page, app_state=None):
-    """외부 연락처 추가 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+    """외부 연락처 추가 플로우를 순차적으로 실행"""
     page.goto(settings.CONTACT_URLS[settings.ENVIRONMENT])
     if not open_contact_add_layer(page):
         return False
     if not click_detail_button(page):
         return False
-    fill_contact_info(page, app_state)
+    if not fill_contact_info(page, app_state):
+        return False
     if not click_save_button(page):
         return False
     return True

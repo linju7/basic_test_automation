@@ -1,6 +1,7 @@
 from playwright.sync_api import Page
 from automation.config.settings import settings
 
+# 로그인 폼 요소 선택자 -> 변경이 발생하는 경우, 여기서 선택자를 적절히 변경해야함 
 LOGIN_ID_SELECTOR = "input[id='user_id']"
 LOGIN_PW_SELECTOR = "input[id='user_pwd']"
 SUBMIT_BTN_SELECTOR = "button[class='btn_submit']"

@@ -7,19 +7,24 @@ BTN_EDIT = 'div.task_area button.lw_btn:text-is("수정")'
 BTN_SAVE = 'div.task_area button.lw_btn_point:text-is("저장")'
 BTN_DELETE = 'div.lw_tr:last-of-type button.btn_delete'
 
-# =====================
-# 유틸 함수
-# =====================
+def open_level_page(page):
+    """직급 관리 페이지 열기"""
+    page.goto(settings.LEVEL_URLS[settings.ENVIRONMENT])
+    return True
+
+
 def click_edit_button(page):
+    """수정 버튼 클릭"""
     page.wait_for_selector(BTN_EDIT, timeout=5000)
     btn = page.locator(BTN_EDIT)
     if btn.count() > 0:
         btn.first.click()
         return True
-    print("[실패] '수정' 버튼을 찾을 수 없음")
     return False
 
+
 def click_last_delete_button(page):
+    """마지막 행의 삭제 버튼 클릭"""
     rows = page.locator('div.lw_tr')
     if rows.count() > 0:
         last_row = rows.nth(rows.count() - 1)
@@ -28,22 +33,24 @@ def click_last_delete_button(page):
             btn.first.click()
             page.wait_for_timeout(5000)
             return True
-    print("[실패] 마지막 행의 '삭제' 버튼을 찾을 수 없음")
     return False
 
+
 def click_save_button(page):
+    """저장 버튼 클릭"""
     btn = page.locator(BTN_SAVE)
     if btn.count() > 0:
         btn.first.click()
         return True
-    print("[실패] '저장' 버튼을 찾을 수 없음")
     return False
 
 # =====================
 # 메인 플로우 함수
 # =====================
-def delete_level(page):
-    """직급 삭제 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+def delete_level(page, app_state=None):
+    """직급 삭제 플로우를 순차적으로 실행"""
+    if not open_level_page(page):
+        return False
     if not click_edit_button(page):
         return False
     if not click_last_delete_button(page):

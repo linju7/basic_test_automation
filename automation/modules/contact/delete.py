@@ -20,34 +20,47 @@ DETAIL_DELETE = 'div.ly_more_menu ul > li:nth-child(3) > a:has-text("삭제")'
 CONFIRM_LAYER = 'div.type_c.type_c_confirm'
 CONFIRM_BUTTON = 'div.type_c.type_c_confirm button.btn_point:has-text("확인")'
 
-# =====================
-# 유틸 함수
-# =====================
+
 def search_contact(page, contact_name):
+    """연락처 검색"""
     page.wait_for_selector(SEARCH_INPUT, timeout=5000)
     page.locator(SEARCH_INPUT).fill(contact_name)
     page.wait_for_timeout(2000)
     page.locator(SEARCH_SUBMIT).click()
     page.wait_for_timeout(2000)
     page.wait_for_selector(SEARCH_RESULT_ROW, timeout=5000)
-    page.locator(SEARCH_RESULT_NAME).first.click()
+    page.locator(SEARCH_RESULT_NAME).first.click()  # 검색 결과 중 첫 번째 연락처 클릭 (유니크 값이 보장되어야 함)
     page.wait_for_selector(DETAIL_NAME, timeout=3000)
 
+    return True
+
 def open_delete_menu(page):
+    """상세 뷰 삭제 클릭"""
     page.locator(DETAIL_SHOW_MORE).click()
     page.wait_for_selector(DETAIL_MORE_MENU, state="visible", timeout=2000)
-    page.locator(DETAIL_DELETE).click()
+    page.locator(DETAIL_DELETE).click()  # 삭제 메뉴 클릭
+
+    return True
+
 
 def confirm_delete(page):
+    """삭제 확인 레이어 클릭"""
     page.wait_for_selector(CONFIRM_LAYER, timeout=2000)
     page.locator(CONFIRM_BUTTON).click()
+
+    return True
 
 # =====================
 # 메인 플로우 함수
 # =====================
 def delete_contact(page, app_state=None):
-    """연락처를 검색 후 상세 진입, 삭제 메뉴 클릭 및 확인한다."""
-    search_contact(page, app_state.contact_name)
-    open_delete_menu(page)
-    confirm_delete(page)
+    """연락처를 검색 후 상세 진입, 삭제 메뉴 클릭 및 확인"""
+
+    # app_state 에 저장된 연락처 이름을 불러와서 검색에 사용 (저장에 문제가 있는 경우 검색되지 않음 -> create 파일 참고)
+    if not search_contact(page, app_state.contact_name):
+        return False
+    if not open_delete_menu(page):
+        return False
+    if not confirm_delete(page):
+        return False
     return True

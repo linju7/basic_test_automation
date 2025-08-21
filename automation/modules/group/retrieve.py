@@ -1,12 +1,15 @@
 from playwright.sync_api import Page
 
+# =====================
+# 셀렉터 상수 (Group Retrieve Page)
+# =====================
 BTN_SEARCH = 'button.btn_search'
 INPUT_SEARCH = '#group_search_input'
 GROUP_NAME_CELL = 'strong.ellipsis_element'
 
 
 def access_group_detail(page: Page, group_name: str):
-    """그룹 검색 후 상세 페이지로 진입한다."""
+    """그룹 검색 후 상세 페이지로 진입"""
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
@@ -18,7 +21,7 @@ def access_group_detail(page: Page, group_name: str):
     page.wait_for_selector(GROUP_NAME_CELL, timeout=10000)
     page.locator(GROUP_NAME_CELL).first.click()
     page.wait_for_timeout(3000)
-    return page
+    return True
 
 
 def get_display_width(text):
@@ -197,7 +200,7 @@ def compare_group_info(group_info, page_info):
 
 
 def validate_group_info(page, app_state=None):
-    """그룹 정보를 검증하는 함수."""
+    """그룹 정보를 검증하는 함수"""
     if not app_state or not hasattr(app_state, 'group_info') or not app_state.group_info:
         print("❌ group_info가 없습니다.")
         return False
@@ -209,13 +212,19 @@ def validate_group_info(page, app_state=None):
     return compare_group_info(app_state.group_info, page_info)
 
 
+# =====================
+# 메인 플로우 함수
+# =====================
 def retrieve_group(page, app_state=None):
-    """그룹 정보 조회 플로우를 순차적으로 실행한다."""
+    """그룹 정보 조회 플로우를 순차적으로 실행"""
     group_name = app_state.group_name if app_state and hasattr(app_state, 'group_name') else None
     if not group_name:
         raise ValueError("app_state.group_name이 필요합니다.")
     
-    access_group_detail(page, group_name)
+    if not access_group_detail(page, group_name):
+        return False
     
-    # 그룹 정보 검증 실행
-    return validate_group_info(page, app_state)
+    if not validate_group_info(page, app_state):
+        return False
+    
+    return True

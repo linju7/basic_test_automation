@@ -1,5 +1,8 @@
 from playwright.sync_api import Page
 
+# =====================
+# 셀렉터 상수 (User Retrieve Page)
+# =====================
 BTN_SEARCH = 'button.btn_search'
 INPUT_SEARCH = '#search_input'
 USER_NAME_CELL = 'div.lw_td.user_name'
@@ -7,6 +10,7 @@ BTN_MANAGE = '.fm_members button.opt_toggle'
 
 
 def access_user_detail(page: Page, user_id: str):
+    """사용자 상세 페이지 접근"""
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
@@ -16,7 +20,7 @@ def access_user_detail(page: Page, user_id: str):
     page.wait_for_timeout(2000) 
     page.locator(USER_NAME_CELL).first.click()
     page.wait_for_timeout(2000)
-    return page
+    return True
 
 
 def extract_page_user_info(page):
@@ -388,7 +392,7 @@ def compare_user_info(user_info, page_info):
 
 
 def validate_user_info(page, app_state=None):
-    """사용자 정보를 검증하는 함수."""
+    """사용자 정보를 검증하는 함수"""
     if not app_state or not hasattr(app_state, 'user_info') or not app_state.user_info:
         print("❌ user_info가 없습니다.")
         return False
@@ -400,13 +404,17 @@ def validate_user_info(page, app_state=None):
     return compare_user_info(app_state.user_info, page_info)
 
 
+# =====================
+# 메인 플로우 함수
+# =====================
 def retrieve_user(page, app_state=None):
-    """구성원 정보 조회 플로우를 순차적으로 실행한다."""
+    """구성원 정보 조회 플로우를 순차적으로 실행"""
     user_id = app_state.global_user_id if app_state and hasattr(app_state, 'global_user_id') else None
     if not user_id:
         raise ValueError("app_state.global_user_id가 필요합니다.")
     
-    access_user_detail(page, user_id)
+    if not access_user_detail(page, user_id):
+        return False
     
     # 사용자 정보 검증 실행
     return validate_user_info(page, app_state)

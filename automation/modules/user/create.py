@@ -1,7 +1,10 @@
 from automation.config.settings import settings
 from datetime import datetime
+from automation.core.safe_fill import safe_fill
 
-# 주요 셀렉터 상수
+# =====================
+# 셀렉터 상수 (User Create Page)
+# =====================
 BTN_ADD_MEMBER = 'button.lw_btn_point:text-is("구성원 추가")'
 BTN_SHOW_ALL = 'button.opt_toggle.fold:text-is("모든 항목 표시")'
 BTN_ADD = 'button.lw_btn_point:text-is("추가")'
@@ -50,16 +53,31 @@ def create_user_info():
     return user_info
 
 
-def safe_fill(page, selector, value):
-    """해당 selector가 존재할 때만 값을 입력한다."""
-    if page.locator(selector).count() > 0:
-        page.locator(selector).fill(value)
-
-
 def wait_and_click(page, selector, timeout=5000):
     """selector가 나타날 때까지 대기 후 클릭한다."""
     page.wait_for_selector(selector, timeout=timeout)
     page.locator(selector).click()
+
+
+def open_user_add_page(page):
+    """구성원 추가 페이지 열기"""
+    page.goto(settings.USERS_URLS[settings.ENVIRONMENT])
+    page.wait_for_selector(BTN_ADD_MEMBER, timeout=5000)
+    if page.locator(BTN_ADD_MEMBER).count() > 0:
+        page.locator(BTN_ADD_MEMBER).click()
+        page.wait_for_selector(BTN_SHOW_ALL, timeout=5000)
+        return True
+    return False
+
+
+def expand_all_fields(page):
+    """모든 항목 표시 버튼 클릭"""
+    if page.locator('button.opt_toggle.fold').count() > 0:
+        button = page.locator('button.opt_toggle.fold')
+        if button.is_visible():
+            button.click()
+            return True
+    return True
 
 
 def fill_user_info(page, app_state=None):
@@ -71,12 +89,6 @@ def fill_user_info(page, app_state=None):
     if app_state is not None:
         app_state.global_user_id = user_info["user_id"]
         app_state.user_info = user_info
-
-    # 모든 항목 표시 버튼 클릭
-    if page.locator('button.opt_toggle.fold').count() > 0:
-        button = page.locator('button.opt_toggle.fold')
-        if button.is_visible():
-            button.click()
 
     # 기본 필드 입력
     basic = user_info["basic_fields"]
@@ -135,31 +147,51 @@ def fill_user_info(page, app_state=None):
     safe_fill(page, 'input.lw_input[placeholder="개인 이메일"]', email["private_email"])
     safe_fill(page, 'input.lw_input[placeholder="직접 입력"]', email["private_domain"])
 
-    return page
+    return True
 
 
-def create_user(page, app_state=None):
-    """구성원 추가 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
-    page.goto(settings.get_users_url())
-    page.wait_for_selector(BTN_ADD_MEMBER, timeout=5000)
-
-    if page.locator(BTN_ADD_MEMBER).count() > 0:
-        page.locator(BTN_ADD_MEMBER).click()
-        page.wait_for_selector(BTN_SHOW_ALL, timeout=5000)
-
-    fill_user_info(page, app_state)
-
+def click_add_button(page):
+    """추가 버튼 클릭"""
     if page.locator(BTN_ADD).count() > 0:
         page.locator(BTN_ADD).click()
+        return True
+    return False
+
+
+def click_confirm_button(page):
+    """확인 버튼 클릭"""
     if page.locator(BTN_CONFIRM).count() > 0:
         page.locator(BTN_CONFIRM).click()
+        return True
+    return False
 
-    # 성공 모달이 나타나는지 체크
+
+def wait_success_modal(page):
+    """성공 모달 확인 및 닫기"""
     try:
         page.wait_for_selector("div.ly_member_added h3.tit:text('구성원 추가 완료')", timeout=5000)
-        # "확인" 버튼 클릭
         if page.locator("div.ly_member_added button.lw_btn:text('확인')").count() > 0:
             page.locator("div.ly_member_added button.lw_btn:text('확인')").click()
         return True
     except Exception:
         return False
+
+
+# =====================
+# 메인 플로우 함수
+# =====================
+def create_user(page, app_state=None):
+    """구성원 추가 플로우를 순차적으로 실행"""
+    if not open_user_add_page(page):
+        return False
+    if not expand_all_fields(page):
+        return False
+    if not fill_user_info(page, app_state):
+        return False
+    if not click_add_button(page):
+        return False
+    if not click_confirm_button(page):
+        return False
+    if not wait_success_modal(page):
+        return False
+    return True
