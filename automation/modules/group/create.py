@@ -87,6 +87,7 @@ def click_add_button(page):
     add_btn = page.locator(BTN_ADD)
     if add_btn.count() > 0:
         add_btn.first.click()
+        page.wait_for_timeout(2000)
         return True
     return False
 

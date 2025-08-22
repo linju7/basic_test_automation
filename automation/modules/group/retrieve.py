@@ -12,6 +12,7 @@ GROUP_NAME_CELL = 'strong.ellipsis_element'
 
 def access_group_detail(page: Page, group_name: str):
     """그룹 검색 후 상세 페이지로 진입"""
+    page.goto(settings.GROUP_URLS[settings.ENVIRONMENT])
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
@@ -127,9 +128,7 @@ def extract_page_group_info(page):
         name_elem = page.locator(selector)
         if name_elem.count() > 0:
             group_name = name_elem.text_content().strip()
-            # "(수정됨)" 같은 추가 텍스트 제거
-            if '(' in group_name:
-                group_name = group_name.split('(')[0]
+            # 페이지 값을 있는 그대로 저장 (수정됨 텍스트 포함)
             page_info['group_name'] = group_name
             break
     
