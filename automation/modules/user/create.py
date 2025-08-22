@@ -5,10 +5,55 @@ from automation.core.safe_fill import safe_fill
 # =====================
 # 셀렉터 상수 (User Create Page)
 # =====================
+
+# 페이지 진입 버튼
 BTN_ADD_MEMBER = 'button.lw_btn_point:text-is("구성원 추가")'
 BTN_SHOW_ALL = 'button.opt_toggle.fold:text-is("모든 항목 표시")'
+BTN_EXPAND_ALL = 'button.opt_toggle.fold'
+
+# 폼 필드 - 기본 정보
+INPUT_LAST_NAME = 'input.lw_input[placeholder="성"][maxlength="80"]'
+INPUT_FIRST_NAME = 'input.lw_input[placeholder="이름"][maxlength="80"]'
+INPUT_NICKNAME = 'input.lw_input[placeholder="닉네임"]'
+INPUT_USER_ID = 'input.lw_input[placeholder="ID"]'
+INPUT_INTERNAL_NUMBER = 'input.lw_input[placeholder="사내 번호"]'
+INPUT_PHONE_NUMBER = 'input.lw_input[placeholder="전화번호"]'
+INPUT_WORKPLACE = 'input.lw_input[placeholder="근무처"]'
+INPUT_TASK = 'input.lw_input[placeholder="담당 업무"]'
+INPUT_EMPLOYEE_NUMBER = 'input.lw_input[placeholder="사원 번호"]'
+INPUT_BIRTHDAY = 'input.lw_input[name="birthday"]'
+INPUT_HIRED_DATE = 'input.lw_input[name="hiredDate"]'
+
+# 폼 필드 - 다국어명
+INPUT_JAPANESE_LAST = 'input.lw_input[placeholder="姓(日本語)"]'
+INPUT_JAPANESE_FIRST = 'input.lw_input[placeholder="名(日本語)"]'
+INPUT_ENGLISH_LAST = 'input.lw_input[placeholder="Last"]'
+INPUT_ENGLISH_FIRST = 'input.lw_input[placeholder="First"]'
+INPUT_KOREAN_LAST = 'input.lw_input[placeholder="성"][maxlength="100"]'
+INPUT_KOREAN_FIRST = 'input.lw_input[placeholder="이름"][maxlength="100"]'
+INPUT_SIMPLIFIED_CHINESE_LAST = 'input.lw_input[placeholder="姓(简体中文)"]'
+INPUT_SIMPLIFIED_CHINESE_FIRST = 'input.lw_input[placeholder="名(简体中文)"]'
+INPUT_TRADITIONAL_CHINESE_LAST = 'input.lw_input[placeholder="姓(繁體中文)"]'
+INPUT_TRADITIONAL_CHINESE_FIRST = 'input.lw_input[placeholder="名(繁體中文)"]'
+
+# 폼 필드 - 이메일
+BTN_ADD_SUB_EMAIL = 'button.generate:text("보조 이메일 추가")'
+INPUT_SUB_EMAIL = 'input.lw_input.email_id[placeholder="보조 이메일"]'
+INPUT_PRIVATE_EMAIL = 'input.lw_input[placeholder="개인 이메일"]'
+INPUT_PRIVATE_DOMAIN = 'input.lw_input[placeholder="직접 입력"]'
+
+# 셀렉트 박스
+SELECT_USER_TYPE = '//div[i[text()="사용자 유형"]]//select[@id="member_type"]'
+SELECT_POSITION = '//div[i[text()="직급"]]//select[@id="member_type"]'
+
+# 액션 버튼
 BTN_ADD = 'button.lw_btn_point:text-is("추가")'
-BTN_CONFIRM = 'button.lw_btn:text-is("확인")'
+
+# 성공 모달
+MODAL_SUCCESS = 'div.ly_common.ly_page.ly_member_added'
+MODAL_SUCCESS_TITLE = 'div.ly_member_added h3.tit:text("구성원 추가 완료")'
+MODAL_SUCCESS_BTN_CONFIRM = 'div.ly_member_added button.lw_btn:text("확인")'
+MODAL_SUCCESS_BTN_CONTINUE = 'div.ly_member_added button.lw_btn_point:text("계속 추가")'
 
 
 def create_user_info():
@@ -72,8 +117,8 @@ def open_user_add_page(page):
 
 def expand_all_fields(page):
     """모든 항목 표시 버튼 클릭"""
-    if page.locator('button.opt_toggle.fold').count() > 0:
-        button = page.locator('button.opt_toggle.fold')
+    if page.locator(BTN_EXPAND_ALL).count() > 0:
+        button = page.locator(BTN_EXPAND_ALL)
         if button.is_visible():
             button.click()
             return True
@@ -93,29 +138,29 @@ def fill_user_info(page, app_state=None):
     # 기본 필드 입력
     basic = user_info["basic_fields"]
     basic_fields = [
-        ("성", 'input.lw_input[placeholder="성"][maxlength="80"]', basic["last_name"]),
-        ("이름", 'input.lw_input[placeholder="이름"][maxlength="80"]', basic["first_name"]),
-        ("닉네임", 'input.lw_input[placeholder="닉네임"]', basic["nickname"]),
-        ("ID", 'input.lw_input[placeholder="ID"]', user_info["user_id"]),
-        ("사내 번호", 'input.lw_input[placeholder="사내 번호"]', basic["internal_number"]),
-        ("전화번호", 'input.lw_input[placeholder="전화번호"]', basic["phone_number"]),
-        ("근무처", 'input.lw_input[placeholder="근무처"]', basic["workplace"]),
-        ("담당 업무", 'input.lw_input[placeholder="담당 업무"]', basic["task"]),
-        ("사원 번호", 'input.lw_input[placeholder="사원 번호"]', basic["employee_number"]),
-        ("생일", 'input.lw_input[name="birthday"]', basic["birthday"]),
-        ("입사일", 'input.lw_input[name="hiredDate"]', basic["hired_date"])
+        ("성", INPUT_LAST_NAME, basic["last_name"]),
+        ("이름", INPUT_FIRST_NAME, basic["first_name"]),
+        ("닉네임", INPUT_NICKNAME, basic["nickname"]),
+        ("ID", INPUT_USER_ID, user_info["user_id"]),
+        ("사내 번호", INPUT_INTERNAL_NUMBER, basic["internal_number"]),
+        ("전화번호", INPUT_PHONE_NUMBER, basic["phone_number"]),
+        ("근무처", INPUT_WORKPLACE, basic["workplace"]),
+        ("담당 업무", INPUT_TASK, basic["task"]),
+        ("사원 번호", INPUT_EMPLOYEE_NUMBER, basic["employee_number"]),
+        ("생일", INPUT_BIRTHDAY, basic["birthday"]),
+        ("입사일", INPUT_HIRED_DATE, basic["hired_date"])
     ]
     for _, selector, value in basic_fields:
         safe_fill(page, selector, value)
 
     # 사용자 유형 1번째 선택
-    user_type_select = page.locator("//div[i[text()='사용자 유형']]//select[@id='member_type']")
+    user_type_select = page.locator(SELECT_USER_TYPE)
     if user_type_select.count() > 0:
         first_value = user_type_select.locator('option').nth(1).get_attribute('value')
         user_type_select.select_option(value=first_value)
 
     # 직급 1번째 선택
-    position_select = page.locator("//div[i[text()='직급']]//select[@id='member_type']")
+    position_select = page.locator(SELECT_POSITION)
     if position_select.count() > 0:
         first_value = position_select.locator('option').nth(1).get_attribute('value')
         position_select.select_option(value=first_value)
@@ -123,29 +168,29 @@ def fill_user_info(page, app_state=None):
     # 다국어 필드 입력
     multilingual = user_info["multilingual_fields"]
     multilingual_fields = [
-        ("姓(日本語)", 'input.lw_input[placeholder="姓(日本語)"]', multilingual["japanese_last"]),
-        ("名(日本語)", 'input.lw_input[placeholder="名(日本語)"]', multilingual["japanese_first"]),
-        ("Last", 'input.lw_input[placeholder="Last"]', multilingual["english_first"]),  # 순서 바꿈 (Last=이름)
-        ("First", 'input.lw_input[placeholder="First"]', multilingual["english_last"]),  # 순서 바꿈 (First=성)
-        ("성", 'input.lw_input[placeholder="성"][maxlength="100"]', multilingual["korean_last"]),
-        ("이름", 'input.lw_input[placeholder="이름"][maxlength="100"]', multilingual["korean_first"]),
-        ("姓(简体中文)", 'input.lw_input[placeholder="姓(简体中文)"]', multilingual["simplified_chinese_last"]),
-        ("名(简体中文)", 'input.lw_input[placeholder="名(简体中文)"]', multilingual["simplified_chinese_first"]),
-        ("姓(繁體中文)", 'input.lw_input[placeholder="姓(繁體中文)"]', multilingual["traditional_chinese_last"]),
-        ("名(繁體中文)", 'input.lw_input[placeholder="名(繁體中文)"]', multilingual["traditional_chinese_first"]),
+        ("姓(日本語)", INPUT_JAPANESE_LAST, multilingual["japanese_last"]),
+        ("名(日本語)", INPUT_JAPANESE_FIRST, multilingual["japanese_first"]),
+        ("Last", INPUT_ENGLISH_LAST, multilingual["english_first"]),  # 순서 바꿈 (Last=이름)
+        ("First", INPUT_ENGLISH_FIRST, multilingual["english_last"]),  # 순서 바꿈 (First=성)
+        ("성", INPUT_KOREAN_LAST, multilingual["korean_last"]),
+        ("이름", INPUT_KOREAN_FIRST, multilingual["korean_first"]),
+        ("姓(简体中文)", INPUT_SIMPLIFIED_CHINESE_LAST, multilingual["simplified_chinese_last"]),
+        ("名(简体中文)", INPUT_SIMPLIFIED_CHINESE_FIRST, multilingual["simplified_chinese_first"]),
+        ("姓(繁體中文)", INPUT_TRADITIONAL_CHINESE_LAST, multilingual["traditional_chinese_last"]),
+        ("名(繁體中文)", INPUT_TRADITIONAL_CHINESE_FIRST, multilingual["traditional_chinese_first"]),
     ]
     for _, selector, value in multilingual_fields:
         safe_fill(page, selector, value)
 
     # 보조 이메일 추가
     email = user_info["email_fields"]
-    if page.locator('button.generate', has_text="보조 이메일 추가").count() > 0:
-        page.locator('button.generate', has_text="보조 이메일 추가").click()
-        safe_fill(page, 'input.lw_input.email_id[placeholder="보조 이메일"]', email["sub_email"])
+    if page.locator(BTN_ADD_SUB_EMAIL).count() > 0:
+        page.locator(BTN_ADD_SUB_EMAIL).click()
+        safe_fill(page, INPUT_SUB_EMAIL, email["sub_email"])
 
     # 개인 이메일 입력
-    safe_fill(page, 'input.lw_input[placeholder="개인 이메일"]', email["private_email"])
-    safe_fill(page, 'input.lw_input[placeholder="직접 입력"]', email["private_domain"])
+    safe_fill(page, INPUT_PRIVATE_EMAIL, email["private_email"])
+    safe_fill(page, INPUT_PRIVATE_DOMAIN, email["private_domain"])
 
     return True
 
@@ -154,27 +199,12 @@ def click_add_button(page):
     """추가 버튼 클릭"""
     if page.locator(BTN_ADD).count() > 0:
         page.locator(BTN_ADD).click()
-        return True
-    return False
 
+    page.wait_for_selector(MODAL_SUCCESS_BTN_CONFIRM, timeout=5000)
+    if page.locator(MODAL_SUCCESS_BTN_CONFIRM).count() > 0:
+        page.locator(MODAL_SUCCESS_BTN_CONFIRM).click()
 
-def click_confirm_button(page):
-    """확인 버튼 클릭"""
-    if page.locator(BTN_CONFIRM).count() > 0:
-        page.locator(BTN_CONFIRM).click()
-        return True
-    return False
-
-
-def wait_success_modal(page):
-    """성공 모달 확인 및 닫기"""
-    try:
-        page.wait_for_selector("div.ly_member_added h3.tit:text('구성원 추가 완료')", timeout=5000)
-        if page.locator("div.ly_member_added button.lw_btn:text('확인')").count() > 0:
-            page.locator("div.ly_member_added button.lw_btn:text('확인')").click()
-        return True
-    except Exception:
-        return False
+    return True
 
 
 # =====================
@@ -189,9 +219,5 @@ def create_user(page, app_state=None):
     if not fill_user_info(page, app_state):
         return False
     if not click_add_button(page):
-        return False
-    if not click_confirm_button(page):
-        return False
-    if not wait_success_modal(page):
         return False
     return True

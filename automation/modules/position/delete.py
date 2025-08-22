@@ -5,7 +5,10 @@ from automation.config.settings import settings
 # =====================
 BTN_EDIT = 'div.task_area button.lw_btn:text-is("수정")'
 BTN_SAVE = 'div.task_area button.lw_btn_point:text-is("저장")'
-BTN_DELETE = 'div.lw_tr:last-of-type button.btn_delete'
+
+# 테이블 행과 삭제 버튼
+DATA_ROWS = 'div.lw_tr:not(.thead)'
+BTN_DELETE = 'button.btn_delete'
 
 def open_position_page(page):
     """직책 관리 페이지 열기"""
@@ -24,11 +27,12 @@ def click_edit_button(page):
 
 
 def click_last_delete_button(page):
-    """마지막 행의 삭제 버튼 클릭"""
-    rows = page.locator('div.lw_tr')
-    if rows.count() > 0:
-        last_row = rows.nth(rows.count() - 1)
-        btn = last_row.locator('button.btn_delete')
+    """마지막 데이터 행의 삭제 버튼 클릭"""
+    # thead가 아닌 데이터 행만 찾기 (tfoot 제외)
+    data_rows = page.locator(DATA_ROWS)
+    if data_rows.count() > 0:
+        last_data_row = data_rows.nth(data_rows.count() - 1)
+        btn = last_data_row.locator(BTN_DELETE)
         if btn.count() > 0:
             btn.first.click()
             page.wait_for_timeout(5000)

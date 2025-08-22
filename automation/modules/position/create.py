@@ -1,6 +1,6 @@
 from automation.config.settings import settings
 from datetime import datetime
-from automation.core.safe_fill import safe_fill
+from automation.core.safe_fill import safe_fill, safe_fill_last
 
 # =====================
 # 셀렉터 상수 (Position Create Page)
@@ -10,9 +10,13 @@ BTN_EDIT = 'div.task_area button.lw_btn:text-is("수정")'
 BTN_ADD_ROW = 'div.lw_tfoot button.btn_add_row:text-is("직책 추가")'
 BTN_SAVE = 'div.task_area button.lw_btn_point:text-is("저장")'
 
+# 입력 필드 셀렉터
+INPUT_POSITION = 'input.lw_input[placeholder="직책"]'
+LANG_FIELD_TEMPLATE = '.lang_field:has(span.lang:text-is("{lang}")) input.lw_input'
+
 def get_last_position_input(page):
     """마지막 직책 입력란 찾기"""
-    inputs = page.locator('input.lw_input[placeholder="직책"]')
+    inputs = page.locator(INPUT_POSITION)
     if inputs.count() > 0:
         return inputs.nth(inputs.count() - 1)
     return None
@@ -20,7 +24,7 @@ def get_last_position_input(page):
 
 def get_last_lang_input(page, lang):
     """마지막 언어별 입력란 찾기"""
-    lang_fields = page.locator(f'.lang_field:has(span.lang:text-is("{lang}")) input.lw_input')
+    lang_fields = page.locator(LANG_FIELD_TEMPLATE.format(lang=lang))
     if lang_fields.count() > 0:
         return lang_fields.nth(lang_fields.count() - 1)
     return None
@@ -59,7 +63,7 @@ def fill_position_fields(page, app_state=None):
     # 대표명 입력
     input_main = get_last_position_input(page)
     if input_main is not None:
-        input_main.fill(position_name)
+        safe_fill_last(page, INPUT_POSITION, position_name)
         if app_state is not None:
             app_state.position_name = position_name
     else:
@@ -77,7 +81,8 @@ def fill_position_fields(page, app_state=None):
     for lang, value in lang_map.items():
         input_lang = get_last_lang_input(page, lang)
         if input_lang is not None:
-            input_lang.fill(value)
+            lang_selector = LANG_FIELD_TEMPLATE.format(lang=lang)
+            safe_fill_last(page, lang_selector, value)
         else:
             return False
     

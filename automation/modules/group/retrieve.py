@@ -1,4 +1,5 @@
 from playwright.sync_api import Page
+from automation.core.safe_fill import safe_fill
 
 # =====================
 # 셀렉터 상수 (Group Retrieve Page)
@@ -13,7 +14,7 @@ def access_group_detail(page: Page, group_name: str):
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
-    page.fill(INPUT_SEARCH, group_name)
+    safe_fill(page, INPUT_SEARCH, group_name)
     page.wait_for_timeout(2000)
     page.locator(INPUT_SEARCH).press('Enter')
     page.wait_for_timeout(2000)

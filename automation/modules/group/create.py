@@ -68,7 +68,7 @@ def fill_group_info(page, app_state=None):
     
     master_input = page.locator(INPUT_MASTER)
     if master_input.count() > 0:
-        master_input.fill(master_id)
+        safe_fill(page, INPUT_MASTER, master_id)
         page.wait_for_timeout(2000)
         master_input.press('Enter')
         page.wait_for_timeout(1000)
@@ -76,8 +76,8 @@ def fill_group_info(page, app_state=None):
     # 메일링 리스트 ID 입력
     input_box = page.locator(INPUT_MAILING_LIST)
     if input_box.count() > 0:
-        input_box.fill('')
-        input_box.fill(group_info["mailing_id"])
+        safe_fill(page, INPUT_MAILING_LIST, '')
+        safe_fill(page, INPUT_MAILING_LIST, group_info["mailing_id"])
     
     return True
 

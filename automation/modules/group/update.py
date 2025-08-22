@@ -1,5 +1,6 @@
 from playwright.sync_api import Page
 import time
+from automation.core.safe_fill import safe_fill
 
 # =====================
 # 셀렉터 상수 (Group Update Page)
@@ -24,7 +25,7 @@ def update_group_info(page: Page, app_state=None):
     # 그룹명 수정
     if page.locator(INPUT_GROUP_NAME).count() > 0:
         new_value = app_state.group_name + "(수정됨)"
-        page.locator(INPUT_GROUP_NAME).fill(new_value)
+        safe_fill(page, INPUT_GROUP_NAME, new_value)
         if app_state is not None:
             app_state.group_name = new_value
             if hasattr(app_state, 'group_info') and app_state.group_info:
@@ -35,7 +36,7 @@ def update_group_info(page: Page, app_state=None):
         if app_state and hasattr(app_state, 'group_info') and app_state.group_info:
             original_description = app_state.group_info.get('description', '')
             new_description = original_description + "_수정"
-            page.locator(INPUT_DESCRIPTION).fill(new_description)
+            safe_fill(page, INPUT_DESCRIPTION, new_description)
             app_state.group_info['description'] = new_description
     
     # 메일링 리스트 수정
@@ -43,8 +44,8 @@ def update_group_info(page: Page, app_state=None):
         if app_state and hasattr(app_state, 'group_info') and app_state.group_info:
             original_mailing = app_state.group_info.get('mailing_id', '')
             new_mailing = original_mailing + "_00"
-            page.locator(INPUT_MAILING_LIST).fill('')
-            page.locator(INPUT_MAILING_LIST).fill(new_mailing)
+            safe_fill(page, INPUT_MAILING_LIST, '')
+            safe_fill(page, INPUT_MAILING_LIST, new_mailing)
             app_state.group_info['mailing_id'] = new_mailing
     
     return True

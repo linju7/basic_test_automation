@@ -27,7 +27,7 @@ def access_org_detail(page: Page, org_name: str):
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
-    page.fill(INPUT_SEARCH, org_name)
+    safe_fill(page, INPUT_SEARCH, org_name)
     page.locator(INPUT_SEARCH).press('Enter')
     page.wait_for_timeout(2000)
     # 검색 결과에서 조직명 클릭

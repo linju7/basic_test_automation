@@ -1,11 +1,16 @@
 from automation.config.settings import settings
 from datetime import datetime
+from automation.core.safe_fill import safe_fill, safe_fill_last
 
 # =====================
 # 셀렉터 상수 (Status Update Page)
 # =====================
 BTN_EDIT = 'div.task_area button.lw_btn:text-is("수정")'
 BTN_SAVE = 'div.task_area button.lw_btn_point:text-is("저장")'
+
+# 입력 필드 셀렉터
+INPUT_STATUS = 'input.lw_input[placeholder="상태"]'
+LANG_FIELD_TEMPLATE = '.lang_field:has(span.lang:text-is("{lang}")) input.lw_input'
 
 # 저장 확인 레이어
 SAVE_CONFIRM_LAYER = 'div.ly_common.freeplan'
@@ -53,7 +58,7 @@ def fill_status_fields_for_update(page, app_state=None):
     # 주 상태명 수정
     input_main = get_last_status_input(page)
     if input_main is not None:
-        input_main.fill(status_name)
+        safe_fill_last(page, INPUT_STATUS, status_name)
         if app_state is not None:
             app_state.status_name = status_name
     else:
@@ -74,7 +79,8 @@ def fill_status_fields_for_update(page, app_state=None):
         try:
             input_lang = get_last_lang_input(page, lang)
             if input_lang is not None:
-                input_lang.fill(value)
+                lang_selector = LANG_FIELD_TEMPLATE.format(lang=lang)
+                safe_fill_last(page, lang_selector, value)
             else:
                 return False
         except Exception:

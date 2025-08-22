@@ -48,7 +48,7 @@ DROPDOWN_ADDRESS_DIRECT = 'ul[style*="translateZ"] li a:has-text("직접입력")
 def search_contact(page, contact_name):
     """연락처 검색"""
     page.wait_for_selector(SEARCH_INPUT, timeout=5000)
-    page.locator(SEARCH_INPUT).fill(contact_name)
+    safe_fill(page, SEARCH_INPUT, contact_name)
     page.locator(SEARCH_SUBMIT).click()
     page.wait_for_selector(SEARCH_RESULT_ROW, timeout=5000)
     page.locator(SEARCH_RESULT_NAME).first.click()

@@ -1,4 +1,6 @@
 from automation.config.settings import settings
+from datetime import datetime
+from automation.core.safe_fill import safe_fill, safe_fill_last
 
 # =====================
 # 셀렉터 상수 (Level Update Page)
@@ -6,14 +8,18 @@ from automation.config.settings import settings
 BTN_EDIT = 'div.task_area button.lw_btn:text-is("수정")'
 BTN_SAVE = 'div.task_area button.lw_btn_point:text-is("저장")'
 
+# 입력 필드 셀렉터
+INPUT_LEVEL = 'input.lw_input[placeholder="직급"]'
+LANG_FIELD_TEMPLATE = '.lang_field:has(span.lang:text-is("{lang}")) input.lw_input'
+
 def get_last_level_input(page):
-    inputs = page.locator('input.lw_input[placeholder="직급"]')
+    inputs = page.locator(INPUT_LEVEL)
     if inputs.count() > 0:
         return inputs.nth(inputs.count() - 1)
     return None
 
 def get_last_lang_input(page, lang):
-    lang_fields = page.locator(f'.lang_field:has(span.lang:text-is("{lang}")) input.lw_input')
+    lang_fields = page.locator(LANG_FIELD_TEMPLATE.format(lang=lang))
     if lang_fields.count() > 0:
         return lang_fields.nth(lang_fields.count() - 1)
     return None
@@ -38,7 +44,7 @@ def fill_level_update_fields(page, app_state=None):
     input_main = get_last_level_input(page)
     if input_main is not None:
         input_main.click()
-        input_main.fill(level_name)
+        safe_fill_last(page, INPUT_LEVEL, level_name)
         if app_state is not None:
             app_state.level_name = level_name
     else:
@@ -56,7 +62,8 @@ def fill_level_update_fields(page, app_state=None):
         input_lang = get_last_lang_input(page, lang)
         if input_lang is not None:
             input_lang.click()
-            input_lang.fill(value)
+            lang_selector = LANG_FIELD_TEMPLATE.format(lang=lang)
+            safe_fill_last(page, lang_selector, value)
         else:
             print(f"[실패] {lang} 입력란을 찾을 수 없음")
             return False

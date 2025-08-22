@@ -1,12 +1,57 @@
 from playwright.sync_api import Page
+from automation.core.safe_fill import safe_fill
 
 # =====================
 # 셀렉터 상수 (User Retrieve Page)
 # =====================
+
+# 검색 관련
 BTN_SEARCH = 'button.btn_search'
 INPUT_SEARCH = '#search_input'
 USER_NAME_CELL = 'div.lw_td.user_name'
+
+# 사용자 정보 표시 영역
 BTN_MANAGE = '.fm_members button.opt_toggle'
+AREA_MEMBER_INFO = '.fm_members'
+AREA_MEMBER_MINIMIZED = '.fm_members.minimize'
+
+# 기본 정보 추출 셀렉터
+TEXT_NAME = '.fm_members .member .infor .name strong'
+TEXT_NICKNAME = '.fm_members .member .infor .name.nickname'
+TEXT_EMAIL = '.fm_members .member .infor .box .email'
+
+# 다국어명 추출
+TEXT_LANG_NAMES = '.fm_members .member .infor .name.lang'
+
+# 필드별 정보 추출 (특수 필드)
+PHONE_SELECTOR = '.fm_members li.box:has(em.h_li:text-is("휴대폰")) ul.txt_box'
+PHONE_ALT_SELECTORS = [
+    '.fm_members li:has(em:text-is("휴대폰")) ul.txt_box',
+    '.fm_members li.box:has(em:text-is("휴대폰")) ul',
+    '.fm_members li:has(em:text-is("휴대폰")) ul'
+]
+
+SUB_EMAIL_SELECTORS = [
+    '.fm_members li.box:has(em.h_li:text-is("보조 이메일")) ul.txt_box li.txt',
+    '.fm_members li.box:has(em.h_li:text-is("보조 이메일")) ul.txt_box',
+    '.fm_members li:has(em:text-is("보조 이메일")) ul.txt_box li.txt',
+    '.fm_members li:has(em:text-is("보조 이메일")) ul.txt_box'
+]
+
+PRIVATE_EMAIL_SELECTORS = [
+    '.fm_members li.box:has(em.h_li:text-is("개인 이메일")) a.link',
+    '.fm_members li.box:has(em.h_li:text-is("개인 이메일")) .link',
+    '.fm_members li:has(em:text-is("개인 이메일")) a.link',
+    '.fm_members li:has(em:text-is("개인 이메일")) .link'
+]
+
+# 일반 필드 추출 템플릿
+FIELD_GENERAL_SELECTORS_TEMPLATE = [
+    '.fm_members li.box:has(em.h_li:text-is("{field_name}")) .txt',
+    '.fm_members li.box:has(em.h_li:text-is("{field_name}")) span.txt',
+    '.fm_members li:has(em:text-is("{field_name}")) .txt',
+    '.fm_members li:has(em:text-is("{field_name}")) span.txt'
+]
 
 
 def access_user_detail(page: Page, user_id: str):
@@ -14,7 +59,7 @@ def access_user_detail(page: Page, user_id: str):
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
-    page.fill(INPUT_SEARCH, user_id)
+    safe_fill(page, INPUT_SEARCH, user_id)
     page.wait_for_timeout(2000) 
     page.locator(INPUT_SEARCH).press('Enter')
     page.wait_for_timeout(2000) 
@@ -27,7 +72,7 @@ def extract_page_user_info(page):
     """페이지에서 사용자 정보를 추출한다."""
     # 관리 버튼 클릭하여 전체 정보 표시 (필요한 경우에만)
     manage_btn = page.locator(BTN_MANAGE)
-    fm_members = page.locator('.fm_members')
+    fm_members = page.locator(AREA_MEMBER_INFO)
     is_minimized = 'minimize' in fm_members.get_attribute('class') if fm_members.count() > 0 else False
     
     if manage_btn.count() > 0 and is_minimized:
@@ -37,7 +82,7 @@ def extract_page_user_info(page):
     page_info = {}
     
     # 기본 이름 정보 추출
-    name_elem = page.locator('.fm_members .member .infor .name strong')
+    name_elem = page.locator(TEXT_NAME)
     if name_elem.count() > 0:
         full_name = name_elem.text_content().strip()
         if '_ ' in full_name:
@@ -51,18 +96,18 @@ def extract_page_user_info(page):
                 page_info['first_name'] = name_parts[1]
     
     # 닉네임
-    nickname_elem = page.locator('.fm_members .member .infor .name.nickname')
+    nickname_elem = page.locator(TEXT_NICKNAME)
     if nickname_elem.count() > 0:
         page_info['nickname'] = nickname_elem.text_content().strip()
     
     # 이메일 (ID)
-    email_elem = page.locator('.fm_members .member .infor .box .email')
+    email_elem = page.locator(TEXT_EMAIL)
     if email_elem.count() > 0:
         page_info['email'] = email_elem.text_content().strip()
     
     # 다국어명 정보 - 페이지의 실제 값을 그대로 저장
     page_info['multilingual'] = {}
-    lang_names = page.locator('.fm_members .member .infor .name.lang')
+    lang_names = page.locator(TEXT_LANG_NAMES)
     lang_count = lang_names.count()
     
     zh_count = 0  # 중국어 카운터
@@ -103,8 +148,7 @@ def extract_page_user_info(page):
     for field_name, key in field_mapping.items():
         if key == 'phone_number':
             # 휴대폰 전용 로직
-            phone_selector = '.fm_members li.box:has(em.h_li:text-is("휴대폰")) ul.txt_box'
-            phone_elem = page.locator(phone_selector)
+            phone_elem = page.locator(PHONE_SELECTOR)
             
             if phone_elem.count() > 0:
                 value = phone_elem.first.text_content().strip()
@@ -114,13 +158,7 @@ def extract_page_user_info(page):
                     page_info[key] = value
             else:
                 # 대안 셀렉터들 시도
-                alt_selectors = [
-                    '.fm_members li:has(em:text-is("휴대폰")) ul.txt_box',
-                    '.fm_members li.box:has(em:text-is("휴대폰")) ul',
-                    '.fm_members li:has(em:text-is("휴대폰")) ul'
-                ]
-                
-                for alt_selector in alt_selectors:
+                for alt_selector in PHONE_ALT_SELECTORS:
                     alt_elem = page.locator(alt_selector)
                     if alt_elem.count() > 0:
                         value = alt_elem.first.text_content().strip()
@@ -132,14 +170,7 @@ def extract_page_user_info(page):
         
         elif key == 'sub_email':
             # 보조 이메일 전용 로직
-            sub_email_selectors = [
-                '.fm_members li.box:has(em.h_li:text-is("보조 이메일")) ul.txt_box li.txt',
-                '.fm_members li.box:has(em.h_li:text-is("보조 이메일")) ul.txt_box',
-                '.fm_members li:has(em:text-is("보조 이메일")) ul.txt_box li.txt',
-                '.fm_members li:has(em:text-is("보조 이메일")) ul.txt_box'
-            ]
-            
-            for sub_email_selector in sub_email_selectors:
+            for sub_email_selector in SUB_EMAIL_SELECTORS:
                 sub_email_elem = page.locator(sub_email_selector)
                 if sub_email_elem.count() > 0:
                     value = sub_email_elem.first.text_content().strip()
@@ -149,14 +180,7 @@ def extract_page_user_info(page):
         
         elif key == 'private_email':
             # 개인 이메일 전용 로직
-            private_email_selectors = [
-                '.fm_members li.box:has(em.h_li:text-is("개인 이메일")) a.link',
-                '.fm_members li.box:has(em.h_li:text-is("개인 이메일")) .link',
-                '.fm_members li:has(em:text-is("개인 이메일")) a.link',
-                '.fm_members li:has(em:text-is("개인 이메일")) .link'
-            ]
-            
-            for private_email_selector in private_email_selectors:
+            for private_email_selector in PRIVATE_EMAIL_SELECTORS:
                 private_email_elem = page.locator(private_email_selector)
                 if private_email_elem.count() > 0:
                     value = private_email_elem.first.text_content().strip()
@@ -166,12 +190,7 @@ def extract_page_user_info(page):
         
         else:
             # 일반 필드들
-            general_selectors = [
-                f'.fm_members li.box:has(em.h_li:text-is("{field_name}")) .txt',
-                f'.fm_members li.box:has(em.h_li:text-is("{field_name}")) span.txt',
-                f'.fm_members li:has(em:text-is("{field_name}")) .txt',
-                f'.fm_members li:has(em:text-is("{field_name}")) span.txt'
-            ]
+            general_selectors = [selector.format(field_name=field_name) for selector in FIELD_GENERAL_SELECTORS_TEMPLATE]
             
             for general_selector in general_selectors:
                 general_elem = page.locator(general_selector)
