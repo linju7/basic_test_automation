@@ -1,5 +1,6 @@
 from playwright.sync_api import Page
 from automation.core.safe_fill import safe_fill
+from automation.config.settings import settings
 
 # =====================
 # 셀렉터 상수 (Group Retrieve Page)
@@ -221,7 +222,7 @@ def retrieve_group(page, app_state=None):
     group_name = app_state.group_name if app_state and hasattr(app_state, 'group_name') else None
     if not group_name:
         raise ValueError("app_state.group_name이 필요합니다.")
-    
+
     if not access_group_detail(page, group_name):
         return False
     

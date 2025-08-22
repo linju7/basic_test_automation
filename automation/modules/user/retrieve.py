@@ -1,6 +1,6 @@
 from playwright.sync_api import Page
 from automation.core.safe_fill import safe_fill
-
+from automation.config.settings import settings
 # =====================
 # 셀렉터 상수 (User Retrieve Page)
 # =====================
@@ -56,6 +56,7 @@ FIELD_GENERAL_SELECTORS_TEMPLATE = [
 
 def access_user_detail(page: Page, user_id: str):
     """사용자 상세 페이지 접근"""
+    page.goto(settings.USERS_URLS[settings.ENVIRONMENT])
     page.wait_for_selector(BTN_SEARCH, timeout=10000)
     page.locator(BTN_SEARCH).click()
     page.wait_for_selector(INPUT_SEARCH, timeout=10000)
