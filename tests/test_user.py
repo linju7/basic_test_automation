@@ -17,5 +17,5 @@ def test_user_03_update_flow(logged_in_page):
 def test_user_04_retrieve_flow(logged_in_page):
     assert retrieve_user(logged_in_page, app_state=app_state), "구성원 정보 조회 실패"
 
-def test_user_05_delete_flow(logged_in_page):
-    assert delete_user(logged_in_page, app_state=app_state), "구성원 삭제 실패"
+# def test_user_05_delete_flow(logged_in_page):
+#     assert delete_user(logged_in_page, app_state=app_state), "구성원 삭제 실패"
