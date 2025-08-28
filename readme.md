@@ -13,6 +13,7 @@ basic_test_automation/
 │   ├── modules/              # 기능별 자동화 코드 
 │   │   ├── contact/          # 외부 연락처
 │   │   ├── group/            # 그룹 
+│   │   ├── external_group/   # 외부그룹
 │   │   ├── level/            # 직급 
 │   │   ├── orgunit/          # 조직 
 │   │   ├── position/         # 직책 
@@ -28,6 +29,7 @@ basic_test_automation/
 │   ├── conftest.py          # pytest 설정 및 픽스처
 │   ├── test_contact.py      # 연락처 테스트
 │   ├── test_group.py        # 그룹 테스트
+│   ├── test_external_group.py # 외부그룹 테스트
 │   ├── test_level.py        # 직급 테스트
 │   ├── test_orgunit.py      # 조직 테스트
 │   ├── test_position.py     # 직책 테스트

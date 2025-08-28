@@ -12,6 +12,7 @@ class AppState:
     def __init__(self):
         self.global_user_id = None
         self.group_name = None
+        self.external_group_name = None
         self.org_name = None
         self.contact_name = None
         self.position_name = None
@@ -21,6 +22,7 @@ class AppState:
 
         self.user_info = None
         self.group_info = None
+        self.external_group_info = None
         self.org_info = None
         self.contact_info = None
     
