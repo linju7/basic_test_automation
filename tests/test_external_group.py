@@ -13,5 +13,8 @@ def test_02_retrieve_external_group_flow(logged_in_page):
 def test_03_update_external_group_flow(logged_in_page):
     assert update_external_group(logged_in_page, app_state=app_state), "외부그룹 수정 실패"
 
-def test_04_delete_external_group_flow(logged_in_page):
+def test_04_retrieve_external_group_flow(logged_in_page):
+    assert retrieve_external_group(logged_in_page, app_state=app_state), "외부그룹 조회 실패"
+
+def test_05_delete_external_group_flow(logged_in_page):
     assert delete_external_group(logged_in_page, app_state=app_state), "외부그룹 삭제 실패"
