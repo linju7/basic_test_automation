@@ -64,25 +64,23 @@ def update_user_info(page: Page, app_state=None):
             "email_fields": app_state.user_info.get("email_fields", {}).copy()
         }
     
-    # 성 (기본/다국어)
-    for selector in [INPUT_LAST_NAME_80, INPUT_LAST_NAME_100]:
-        if page.locator(selector).count() > 0:
-            current_value = page.locator(selector).input_value()
-            new_value = current_value + "(수정됨)"
-            safe_fill(page, selector, new_value)
-            # app_state에 저장 - 기본 성 필드만 저장 (maxlength="80")
-            if app_state is not None and 'updated_info' in locals() and selector == INPUT_LAST_NAME_80:
-                updated_info["basic_fields"]["last_name"] = new_value
+    # 성 (기본 필드만 - maxlength="80")
+    if page.locator(INPUT_LAST_NAME_80).count() > 0:
+        current_value = page.locator(INPUT_LAST_NAME_80).input_value()
+        new_value = current_value + "(수정됨)"
+        safe_fill(page, INPUT_LAST_NAME_80, new_value)
+        # app_state에 저장
+        if app_state is not None and 'updated_info' in locals():
+            updated_info["basic_fields"]["last_name"] = new_value
     
-    # 이름 (기본/다국어)
-    for selector in [INPUT_FIRST_NAME_80, INPUT_FIRST_NAME_100]:
-        if page.locator(selector).count() > 0:
-            current_value = page.locator(selector).input_value()
-            new_value = current_value + "(수정됨)"
-            safe_fill(page, selector, new_value)
-            # app_state에 저장 - 기본 이름 필드만 저장 (maxlength="80")
-            if app_state is not None and 'updated_info' in locals() and selector == INPUT_FIRST_NAME_80:
-                updated_info["basic_fields"]["first_name"] = new_value
+    # 이름 (기본 필드만 - maxlength="80")
+    if page.locator(INPUT_FIRST_NAME_80).count() > 0:
+        current_value = page.locator(INPUT_FIRST_NAME_80).input_value()
+        new_value = current_value + "(수정됨)"
+        safe_fill(page, INPUT_FIRST_NAME_80, new_value)
+        # app_state에 저장
+        if app_state is not None and 'updated_info' in locals():
+            updated_info["basic_fields"]["first_name"] = new_value
     
     # 다국어 필드 - create.py와 정확히 동일한 매핑
     multilingual_mapping = {
