@@ -25,6 +25,8 @@ class AppState:
         self.external_group_info = None
         self.org_info = None
         self.contact_info = None
+        self.company_tag_name = None
+        self.my_tag_name = None
     
 
 app_state = AppState()
