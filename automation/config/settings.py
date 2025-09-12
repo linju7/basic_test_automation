@@ -63,6 +63,18 @@ class Settings:
         "real" : "https://admin.worksmobile.com/member/status"
     }
 
+    COMPANY_TAG_URLS = {
+        "alpha": "https://alpha-contact.worksmobile.com/v2/settings/company",
+        "stage": "https://stage.contact.worksmobile.com/v2/settings/company",
+        "real" : "https://contact.worksmobile.com/v2/settings/company"
+    }
+    
+    MY_TAG_URLS = {
+        "alpha": "https://alpha-contact.worksmobile.com/v2/settings/my",
+        "stage": "https://stage.contact.worksmobile.com/v2/settings/my",
+        "real" : "https://contact.worksmobile.com/v2/settings/my"
+    }
+
     @classmethod
     def get_base_url(cls) -> str:
         """현재 환경에 맞는 기본 URL 반환"""

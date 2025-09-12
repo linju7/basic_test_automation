@@ -20,6 +20,8 @@ basic_test_automation/
 │   │   ├── status/           # 상태 
 │   │   ├── user/             # 구성원
 │   │   └── usertype/         # 사용자 유형
+│   │   └── company_tag/      # 회사 태그
+│   │   └── my_tag/           # 마이 태그
 │   └── pages/                # 페이지 객체 모델
 │       ├── contact_page.py
 │       ├── group_page.py
@@ -36,6 +38,8 @@ basic_test_automation/
 │   ├── test_status.py       # 상태 테스트
 │   ├── test_user.py         # 구성원 테스트
 │   └── test_usertype.py     # 사용자 유형 테스트
+│   └── test_company_tag.py  # 회사 태그 테스트
+│   └── test_my_tag.py       # 마이 태그 테스트
 ├── docker-compose.yml        # Docker 컨테이너 설정
 ├── Dockerfile               # Docker 이미지 설정
 ├── pytest.ini              # pytest 설정

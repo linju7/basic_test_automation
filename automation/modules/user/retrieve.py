@@ -121,9 +121,9 @@ def extract_page_user_info(page):
             # 중국어의 경우 순서에 따라 구분
             if lang_attr == 'zh':
                 if zh_count == 0:
-                    key = 'zh_TW'  # 첫 번째 zh는 번체
+                    key = 'zh_CN'  # 첫 번째 zh는 간체
                 else:
-                    key = 'zh_CN'  # 두 번째 zh는 간체
+                    key = 'zh_TW'  # 두 번째 zh는 번체
                 zh_count += 1
             else:
                 key = lang_attr
