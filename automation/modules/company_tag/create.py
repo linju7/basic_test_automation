@@ -32,7 +32,6 @@ def click_add_company_tag_button(page):
         btn.first.click()
         page.wait_for_selector(LAYER_CREATE_TAG, timeout=5000)
         return True
-    print("[실패] '회사 태그 추가' 버튼을 찾을 수 없음")
     return False
 
 def fill_tag_name(page, app_state=None):
@@ -51,9 +50,7 @@ def fill_tag_name(page, app_state=None):
         if app_state is not None:
             app_state.company_tag_name = tag_name
         return True
-    else:
-        print("[실패] 태그명 입력란을 찾을 수 없음")
-        return False
+    return False
 
 def click_save_button(page):
     """저장 버튼 클릭"""
@@ -67,7 +64,6 @@ def click_save_button(page):
         btn.first.click()
         page.wait_for_timeout(2000)
         return True
-    print("[실패] '저장' 버튼을 찾을 수 없음")
     return False
 
 # =====================
