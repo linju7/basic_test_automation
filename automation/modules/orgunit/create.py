@@ -61,11 +61,16 @@ def click_add_button(page):
 # =====================
 def create_orgunit(page, app_state=None):
     """조직 추가 플로우를 순차적으로 실행"""
+    print("\n조직 추가 자동화 시작")
     page.goto(settings.ORG_URLS[settings.ENVIRONMENT])
     if not open_org_add_layer(page):
+        print("조직 추가 자동화 실패 - open_org_add_layer\n")
         return False
     if not fill_org_info(page, app_state):
+        print("조직 추가 자동화 실패 - fill_org_info\n")
         return False
     if not click_add_button(page):
+        print("조직 추가 자동화 실패 - click_add_button\n")
         return False
+    print("조직 추가 자동화 완료\n")
     return True

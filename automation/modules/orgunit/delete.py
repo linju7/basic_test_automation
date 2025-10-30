@@ -46,12 +46,18 @@ def confirm_delete_finish(page):
 # =====================
 def delete_orgunit(page: Page, app_state=None) -> bool:
     """조직 상세 페이지에서 조직 삭제 절차를 수행"""
+    print("\n조직 삭제 자동화 시작")
     if not click_delete_button(page):
+        print("조직 삭제 자동화 실패 - click_delete_button\n")
         return False
     if not check_delete_boxes(page):
+        print("조직 삭제 자동화 실패 - check_delete_boxes\n")
         return False
     if not confirm_delete(page):
+        print("조직 삭제 자동화 실패 - confirm_delete\n")
         return False
     if not confirm_delete_finish(page):
+        print("조직 삭제 자동화 실패 - confirm_delete_finish\n")
         return False
+    print("조직 삭제 자동화 완료\n")
     return True

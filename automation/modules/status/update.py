@@ -115,14 +115,21 @@ def confirm_save_changes(page):
 # =====================
 def update_status(page, app_state=None):
     """마지막 상태 항목을 수정"""
+    print("\n상태 수정 자동화 시작")
     if not open_status_page(page):
+        print("상태 수정 자동화 실패 - open_status_page\n")
         return False
     if not click_edit_button(page):
+        print("상태 수정 자동화 실패 - click_edit_button\n")
         return False
     if not fill_status_fields_for_update(page, app_state):
+        print("상태 수정 자동화 실패 - fill_status_fields_for_update\n")
         return False
     if not click_save_button(page):
+        print("상태 수정 자동화 실패 - click_save_button\n")
         return False
     if not confirm_save_changes(page):
+        print("상태 수정 자동화 실패 - confirm_save_changes\n")
         return False
+    print("상태 수정 자동화 완료\n")
     return True

@@ -102,14 +102,21 @@ def click_save_button(page):
 # =====================
 def create_position(page, app_state=None):
     """직책 추가 플로우를 순차적으로 실행"""
+    print("\n직책 추가 자동화 시작")
     if not open_position_page(page):
+        print("직책 추가 자동화 실패 - open_position_page\n")
         return False
     if not click_edit_button(page):
+        print("직책 추가 자동화 실패 - click_edit_button\n")
         return False
     if not click_add_row_button(page):
+        print("직책 추가 자동화 실패 - click_add_row_button\n")
         return False
     if not fill_position_fields(page, app_state):
+        print("직책 추가 자동화 실패 - fill_position_fields\n")
         return False
     if not click_save_button(page):
+        print("직책 추가 자동화 실패 - click_save_button\n")
         return False
+    print("직책 추가 자동화 완료\n")
     return True

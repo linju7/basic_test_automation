@@ -111,12 +111,18 @@ def click_save_button(page):
 
 def update_my_tag(page, app_state=None):
     """MY 태그 수정 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+    print("\nMY 태그 수정 자동화 시작")
     if not open_my_tag_page(page):
+        print("MY 태그 수정 자동화 실패 - open_my_tag_page\n")
         return False
     if not find_and_click_rename_button(page, app_state):
+        print("MY 태그 수정 자동화 실패 - find_and_click_rename_button\n")
         return False
     if not update_tag_name(page, app_state):
+        print("MY 태그 수정 자동화 실패 - update_tag_name\n")
         return False
     if not click_save_button(page):
+        print("MY 태그 수정 자동화 실패 - click_save_button\n")
         return False
+    print("MY 태그 수정 자동화 완료\n")
     return True

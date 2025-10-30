@@ -56,12 +56,17 @@ def confirm_delete(page):
 # =====================
 def delete_contact(page, app_state=None):
     """연락처를 검색 후 상세 진입, 삭제 메뉴 클릭 및 확인"""
+    print("\n외부 연락처 삭제 자동화 시작")
 
     # app_state 에 저장된 연락처 이름을 불러와서 검색에 사용 (저장에 문제가 있는 경우 검색되지 않음 -> create 파일 참고)
     if not search_contact(page, app_state.contact_name):
+        print("외부 연락처 삭제 자동화 실패 - search_contact\n")
         return False
     if not open_delete_menu(page):
+        print("외부 연락처 삭제 자동화 실패 - open_delete_menu\n")
         return False
     if not confirm_delete(page):
+        print("외부 연락처 삭제 자동화 실패 - confirm_delete\n")
         return False
+    print("외부 연락처 삭제 자동화 완료\n")
     return True

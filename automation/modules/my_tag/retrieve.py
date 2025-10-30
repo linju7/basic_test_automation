@@ -45,10 +45,8 @@ def find_my_tag_in_list(page, app_state=None):
     for i in range(tag_cells.count()):
         cell_text = tag_cells.nth(i).text_content().strip()
         if cell_text == tag_name:
-            print(f"[성공] MY 태그 '{tag_name}' 조회 성공")
             return True
     
-    print(f"[실패] MY 태그 '{tag_name}' 조회 실패")
     return False
 
 # =====================
@@ -57,8 +55,12 @@ def find_my_tag_in_list(page, app_state=None):
 
 def retrieve_my_tag(page, app_state=None):
     """MY 태그 조회 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+    print("\nMY 태그 조회 자동화 시작")
     if not open_my_tag_page(page):
+        print("MY 태그 조회 자동화 실패 - open_my_tag_page\n")
         return False
     if not find_my_tag_in_list(page, app_state):
+        print("MY 태그 조회 자동화 실패 - find_my_tag_in_list\n")
         return False
+    print("MY 태그 조회 자동화 완료\n")
     return True

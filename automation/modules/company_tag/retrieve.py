@@ -58,8 +58,12 @@ def find_company_tag_in_list(page, app_state=None):
 
 def retrieve_company_tag(page, app_state=None):
     """회사 태그 조회 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+    print("\n회사 태그 조회 자동화 시작")
     if not open_company_tag_page(page):
+        print("회사 태그 조회 자동화 실패 - open_company_tag_page\n")
         return False
     if not find_company_tag_in_list(page, app_state):
+        print("회사 태그 조회 자동화 실패 - find_company_tag_in_list\n")
         return False
+    print("회사 태그 조회 자동화 완료\n")
     return True

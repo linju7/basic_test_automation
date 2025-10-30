@@ -73,16 +73,22 @@ def click_save_button(page):
 # =====================
 def update_orgunit(page: Page, app_state=None):
     """조직 상세 페이지에서 조직 수정 절차를 수행"""
+    print("\n조직 수정 자동화 시작")
     org_name = app_state.org_name if app_state and hasattr(app_state, 'org_name') else None
     if not org_name:
         raise ValueError("app_state.org_name이 필요합니다.")
     
     if not access_org_detail(page, org_name):
+        print("조직 수정 자동화 실패 - access_org_detail\n")
         return False
     if not click_modify_button(page):
+        print("조직 수정 자동화 실패 - click_modify_button\n")
         return False
     if not update_orgunit_info(page, app_state):
+        print("조직 수정 자동화 실패 - update_orgunit_info\n")
         return False
     if not click_save_button(page):
+        print("조직 수정 자동화 실패 - click_save_button\n")
         return False
+    print("조직 수정 자동화 완료\n")
     return True

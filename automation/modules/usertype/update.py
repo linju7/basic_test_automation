@@ -83,10 +83,15 @@ def click_save_button(page):
 # =====================
 def update_usertype(page, app_state=None):
     """사용자유형 수정 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+    print("\n사용자 유형 수정 자동화 시작")
     if not click_edit_button(page):
+        print("사용자 유형 수정 자동화 실패 - click_edit_button\n")
         return False
     if not fill_usertype_update_fields(page, app_state):
+        print("사용자 유형 수정 자동화 실패 - fill_usertype_update_fields\n")
         return False
     if not click_save_button(page):
+        print("사용자 유형 수정 자동화 실패 - click_save_button\n")
         return False
+    print("사용자 유형 수정 자동화 완료\n")
     return True

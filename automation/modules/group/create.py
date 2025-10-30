@@ -97,11 +97,16 @@ def click_add_button(page):
 # =====================
 def create_group(page, app_state=None):
     """그룹 추가 플로우를 순차적으로 실행"""
+    print("\n그룹 추가 자동화 시작")
     page.goto(settings.GROUP_URLS[settings.ENVIRONMENT])
     if not open_group_add_layer(page):
+        print("그룹 추가 자동화 실패 - open_group_add_layer\n")
         return False
     if not fill_group_info(page, app_state):
+        print("그룹 추가 자동화 실패 - fill_group_info\n")
         return False
     if not click_add_button(page):
+        print("그룹 추가 자동화 실패 - click_add_button\n")
         return False
+    print("그룹 추가 자동화 완료\n")
     return True

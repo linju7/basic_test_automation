@@ -429,13 +429,20 @@ def validate_user_info(page, app_state=None):
 # =====================
 def retrieve_user(page, app_state=None):
     """구성원 정보 조회 플로우를 순차적으로 실행"""
+    print("\n구성원 조회 자동화 시작")
     user_id = app_state.global_user_id if app_state and hasattr(app_state, 'global_user_id') else None
     if not user_id:
         raise ValueError("app_state.global_user_id가 필요합니다.")
     
     if not access_user_detail(page, user_id):
+        print("구성원 조회 자동화 실패 - access_user_detail\n")
         return False
     
     # 사용자 정보 검증 실행
-    return validate_user_info(page, app_state)
+    result = validate_user_info(page, app_state)
+    if result:
+        print("구성원 조회 자동화 완료\n")
+    else:
+        print("구성원 조회 자동화 실패 - validate_user_info\n")
+    return result
     

@@ -93,13 +93,19 @@ def click_save_button(page):
 # =====================
 def create_level(page, app_state=None):
     """직급 추가 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+    print("\n직급 추가 자동화 시작")
     open_level_page(page)
     if not click_edit_button(page):
+        print("직급 추가 자동화 실패 - click_edit_button\n")
         return False
     if not click_add_row_button(page):
+        print("직급 추가 자동화 실패 - click_add_row_button\n")
         return False
     if not fill_level_fields(page, app_state):
+        print("직급 추가 자동화 실패 - fill_level_fields\n")
         return False
     if not click_save_button(page):
+        print("직급 추가 자동화 실패 - click_save_button\n")
         return False
+    print("직급 추가 자동화 완료\n")
     return True

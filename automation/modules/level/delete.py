@@ -53,12 +53,18 @@ def click_save_button(page):
 # =====================
 def delete_level(page, app_state=None):
     """직급 삭제 플로우를 순차적으로 실행"""
+    print("\n직급 삭제 자동화 시작")
     if not open_level_page(page):
+        print("직급 삭제 자동화 실패 - open_level_page\n")
         return False
     if not click_edit_button(page):
+        print("직급 삭제 자동화 실패 - click_edit_button\n")
         return False
     if not click_last_delete_button(page):
+        print("직급 삭제 자동화 실패 - click_last_delete_button\n")
         return False
     if not click_save_button(page):
+        print("직급 삭제 자동화 실패 - click_save_button\n")
         return False
+    print("직급 삭제 자동화 완료\n")
     return True

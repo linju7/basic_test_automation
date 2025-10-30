@@ -214,14 +214,18 @@ def validate_external_group_info(page, app_state=None):
 # =====================
 def retrieve_external_group(page, app_state=None):
     """외부그룹 정보 조회 플로우를 순차적으로 실행"""
+    print("\n외부 그룹 조회 자동화 시작")
     group_name = app_state.external_group_name if app_state and hasattr(app_state, 'external_group_name') else None
     if not group_name:
         raise ValueError("app_state.external_group_name이 필요합니다.")
 
     if not access_external_group_detail(page, group_name):
+        print("외부 그룹 조회 자동화 실패 - access_external_group_detail\n")
         return False
     
     if not validate_external_group_info(page, app_state):
+        print("외부 그룹 조회 자동화 실패 - validate_external_group_info\n")
         return False
     
+    print("외부 그룹 조회 자동화 완료\n")
     return True

@@ -72,11 +72,16 @@ def click_save_button(page):
 
 def create_my_tag(page, app_state=None):
     """MY 태그 추가 플로우를 순차적으로 실행한다. 성공 시 True, 실패 시 False 반환."""
+    print("\nMY 태그 추가 자동화 시작")
     open_my_tag_page(page)
     if not click_add_my_tag_button(page):
+        print("MY 태그 추가 자동화 실패 - click_add_my_tag_button\n")
         return False
     if not fill_tag_name(page, app_state):
+        print("MY 태그 추가 자동화 실패 - fill_tag_name\n")
         return False
     if not click_save_button(page):
+        print("MY 태그 추가 자동화 실패 - click_save_button\n")
         return False
+    print("MY 태그 추가 자동화 완료\n")
     return True

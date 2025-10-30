@@ -116,13 +116,19 @@ def save_contact_update(page):
 # =====================
 def update_contact(page, app_state=None):
     """연락처를 검색 후 상세 진입, 수정 레이어에서 값 변경 후 저장한다."""
+    print("\n외부 연락처 수정 자동화 시작")
     # app_state 에 저장된 연락처 이름을 불러와서 검색에 사용 (저장에 문제가 있는 경우 검색되지 않음 -> create 파일 참고)
     if not search_contact(page, app_state.contact_name):
+        print("외부 연락처 수정 자동화 실패 - search_contact\n")
         return False
     if not open_edit_layer(page):
+        print("외부 연락처 수정 자동화 실패 - open_edit_layer\n")
         return False
     if not fill_contact_update_fields(page, app_state):
+        print("외부 연락처 수정 자동화 실패 - fill_contact_update_fields\n")
         return False
     if not save_contact_update(page):
+        print("외부 연락처 수정 자동화 실패 - save_contact_update\n")
         return False
+    print("외부 연락처 수정 자동화 완료\n")
     return True

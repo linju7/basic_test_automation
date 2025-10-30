@@ -112,13 +112,19 @@ def click_save_button(page):
 # =====================
 def create_contact(page, app_state=None):
     """외부 연락처 추가 플로우를 순차적으로 실행"""
+    print("\n외부 연락처 추가 자동화 시작")
     page.goto(settings.CONTACT_URLS[settings.ENVIRONMENT])
     if not open_contact_add_layer(page):
+        print("외부 연락처 추가 자동화 실패 - open_contact_add_layer\n")
         return False
     if not click_detail_button(page):
+        print("외부 연락처 추가 자동화 실패 - click_detail_button\n")
         return False
     if not fill_contact_info(page, app_state):
+        print("외부 연락처 추가 자동화 실패 - fill_contact_info\n")
         return False
     if not click_save_button(page):
+        print("외부 연락처 추가 자동화 실패 - click_save_button\n")
         return False
+    print("외부 연락처 추가 자동화 완료\n")
     return True

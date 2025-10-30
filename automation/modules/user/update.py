@@ -11,11 +11,11 @@ BTN_MODIFY_MEMBER = 'button.lw_btn_point:text-is("구성원 수정")'
 BTN_SAVE = 'button.lw_btn_point:text-is("저장")'
 
 # 기본 입력 필드
-INPUT_LAST_NAME_80 = 'input.lw_input[placeholder="성"][maxlength="80"]'
-INPUT_FIRST_NAME_80 = 'input.lw_input[placeholder="이름"][maxlength="80"]'
+INPUT_LAST_NAME_80 = 'div.name_box:not(.minor) input.lw_input[placeholder="성"]'
+INPUT_FIRST_NAME_80 = 'div.name_box:not(.minor) input.lw_input[placeholder="이름"]'
 INPUT_LAST_NAME_100 = 'input.lw_input[placeholder="성"][maxlength="100"]'
 INPUT_FIRST_NAME_100 = 'input.lw_input[placeholder="이름"][maxlength="100"]'
-INPUT_NICKNAME = 'input.lw_input[placeholder="닉네임"]'
+INPUT_NICKNAME = 'div.field:has(i.hd:text-is("닉네임")) input.lw_input.w_limit'
 INPUT_USER_ID = 'input.lw_input[placeholder="ID"]'
 
 # 다국어 입력 필드
@@ -29,8 +29,8 @@ INPUT_TRADITIONAL_CHINESE_LAST = 'input.lw_input[placeholder="姓(繁體中文)"
 INPUT_TRADITIONAL_CHINESE_FIRST = 'input.lw_input[placeholder="名(繁體中文)"]'
 
 # 이메일 및 기타 필드
-INPUT_SUB_EMAIL = 'input.lw_input.email_id[placeholder="보조 이메일"]'
-INPUT_PRIVATE_EMAIL = 'input.lw_input[placeholder="개인 이메일"]'
+INPUT_SUB_EMAIL = 'div.field:has(i.hd:text-is("보조 이메일")) div.item input.lw_input.email_id'
+INPUT_PRIVATE_EMAIL = 'div.field:has(i.hd:text-is("개인 이메일")) input.lw_input.email_id'
 INPUT_INTERNAL_NUMBER = 'input.lw_input[placeholder="사내 번호"]'
 INPUT_PHONE_NUMBER = 'input.lw_input[placeholder="전화번호"]'
 INPUT_WORKPLACE = 'input.lw_input[placeholder="근무처"]'
@@ -193,10 +193,15 @@ def click_save_button(page):
 # =====================
 def update_user(page: Page, app_state=None):
     """구성원 수정 플로우를 순차적으로 실행"""
+    print("\n구성원 수정 자동화 시작")
     if not click_modify_button(page):
+        print("구성원 수정 자동화 실패 - click_modify_button\n")
         return False
     if not update_user_info(page, app_state):
+        print("구성원 수정 자동화 실패 - update_user_info\n")
         return False
     if not click_save_button(page):
+        print("구성원 수정 자동화 실패 - click_save_button\n")
         return False
+    print("구성원 수정 자동화 완료\n")
     return True

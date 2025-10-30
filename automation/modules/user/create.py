@@ -212,12 +212,18 @@ def click_add_button(page):
 # =====================
 def create_user(page, app_state=None):
     """구성원 추가 플로우를 순차적으로 실행"""
+    print("\n구성원 추가 자동화 시작")
     if not open_user_add_page(page):
+        print("구성원 추가 자동화 실패 - open_user_add_page\n")
         return False
     if not expand_all_fields(page):
+        print("구성원 추가 자동화 실패 - expand_all_fields\n")
         return False
     if not fill_user_info(page, app_state):
+        print("구성원 추가 자동화 실패 - fill_user_info\n")
         return False
     if not click_add_button(page):
+        print("구성원 추가 자동화 실패 - click_add_button\n")
         return False
+    print("구성원 추가 자동화 완료\n")
     return True

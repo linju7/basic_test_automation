@@ -37,10 +37,15 @@ def confirm_delete(page):
 # =====================
 def delete_group(page: Page, app_state=None) -> bool:
     """그룹 상세 페이지에서 그룹 삭제 절차를 수행"""
+    print("\n그룹 삭제 자동화 시작")
     if not click_delete_button(page):
+        print("그룹 삭제 자동화 실패 - click_delete_button\n")
         return False
     if not check_delete_boxes(page):
+        print("그룹 삭제 자동화 실패 - check_delete_boxes\n")
         return False
     if not confirm_delete(page):
+        print("그룹 삭제 자동화 실패 - confirm_delete\n")
         return False
+    print("그룹 삭제 자동화 완료\n")
     return True

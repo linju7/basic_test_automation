@@ -67,14 +67,19 @@ def click_save_button(page):
 # =====================
 def update_group(page: Page, app_state=None):
     """그룹 정보 수정 플로우를 순차적으로 실행"""
+    print("\n그룹 수정 자동화 시작")
     group_name = app_state.group_name if app_state and hasattr(app_state, 'group_name') else None
     if not group_name:
         raise ValueError("app_state.group_name이 필요합니다.")
     
     if not click_modify_button(page):
+        print("그룹 수정 자동화 실패 - click_modify_button\n")
         return False
     if not update_group_info(page, app_state):
+        print("그룹 수정 자동화 실패 - update_group_info\n")
         return False
     if not click_save_button(page):
+        print("그룹 수정 자동화 실패 - click_save_button\n")
         return False
+    print("그룹 수정 자동화 완료\n")
     return True

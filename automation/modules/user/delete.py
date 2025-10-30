@@ -85,25 +85,35 @@ def confirm_permanent_delete(page):
 # =====================
 def delete_user(page: Page, app_state=None) -> bool:
     """구성원 상세 페이지에서 계정 삭제 및 영구 삭제 절차를 수행"""
+    print("\n구성원 삭제 자동화 시작")
 
     # 계정 삭제
     if not open_manage_menu(page):
+        print("구성원 삭제 자동화 실패 - open_manage_menu\n")
         return False
     if not click_account_delete(page):
+        print("구성원 삭제 자동화 실패 - click_account_delete\n")
         return False
     if not check_delete_boxes(page):
+        print("구성원 삭제 자동화 실패 - check_delete_boxes\n")
         return False
     if not click_delete_confirm(page):
+        print("구성원 삭제 자동화 실패 - click_delete_confirm\n")
         return False
     
     # 영구 삭제
     if not open_manage_menu(page):
+        print("구성원 삭제 자동화 실패 - open_manage_menu\n")
         return False
     if not click_permanent_delete(page):
+        print("구성원 삭제 자동화 실패 - click_permanent_delete\n")
         return False
     if not check_permanent_boxes(page):
+        print("구성원 삭제 자동화 실패 - check_permanent_boxes\n")
         return False
     if not confirm_permanent_delete(page):
+        print("구성원 삭제 자동화 실패 - confirm_permanent_delete\n")
         return False
     
+    print("구성원 삭제 자동화 완료\n")
     return True
