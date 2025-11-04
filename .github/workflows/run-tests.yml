@@ -22,6 +22,16 @@ on:
           - '🏷️ 회사 태그 (Company Tag)'
           - '📍 MY 태그 (MY Tag)'
       
+      environment:
+        description: '🌍 실행 환경'
+        required: true
+        type: choice
+        default: 'real'
+        options:
+          - real
+          - stage
+          - alpha
+      
       browser:
         description: '🌐 브라우저'
         required: false
@@ -54,7 +64,7 @@ jobs:
       - name: 🔧 환경 설정
         run: |
           cat << EOF > .env
-          TEST_ENV=${{ secrets.SERVER }}
+          TEST_ENV=${{ inputs.environment }}
           REAL_DOMAIN=${{ secrets.REAL_DOMAIN }}
           PASSWORD=${{ secrets.PASSWORD }}
           HEADLESS=true
@@ -64,7 +74,6 @@ jobs:
       
       - name: 🧪 테스트 실행
         id: test_step
-        continue-on-error: true
         env:
           PYTHONPATH: ${{ github.workspace }}
           TEST_ENV: ${{ secrets.SERVER }}
@@ -124,26 +133,26 @@ jobs:
           esac
       
       - name: 📋 테스트 결과 요약 (성공)
-        if: steps.test_step.outcome == 'success'
+        if: success()
         run: |
           echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ secrets.SERVER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### ✅ 결과: 성공" >> $GITHUB_STEP_SUMMARY
           echo "모든 테스트가 정상적으로 통과했습니다." >> $GITHUB_STEP_SUMMARY
       
       - name: 📋 테스트 결과 요약 (실패)
-        if: steps.test_step.outcome != 'success'
+        if: failure()
         run: |
           echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ secrets.SERVER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### ❌ 결과: 실패" >> $GITHUB_STEP_SUMMARY
