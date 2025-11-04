@@ -121,33 +121,22 @@ jobs:
               ;;
           esac
       
-      - name: 📊 테스트 결과 업로드
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ github.run_number }}
-          path: test-results/
-          retention-days: 30
-          if-no-files-found: ignore
-      
-      - name: 📸 실패 스크린샷 업로드
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: failure-screenshots-${{ github.run_number }}
-          path: test-results/**/*.png
-          retention-days: 7
-          if-no-files-found: ignore
-      
-      - name: 📋 테스트 요약
+      - name: 📋 테스트 결과 요약
         if: always()
         run: |
           echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ secrets.ENVIRONMENT }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ secrets.SERVER }}" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 상세 결과는 **Artifacts**에서 다운로드하세요." >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "#### ✅ 결과: 성공" >> $GITHUB_STEP_SUMMARY
+            echo "모든 테스트가 정상적으로 통과했습니다." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "#### ❌ 결과: 실패" >> $GITHUB_STEP_SUMMARY
+            echo "위 로그에서 실패한 테스트를 확인하세요." >> $GITHUB_STEP_SUMMARY
+          fi
 
