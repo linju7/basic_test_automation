@@ -73,51 +73,51 @@ jobs:
           case "${{ inputs.test_target }}" in
             "🎯 전체 테스트")
               echo "🚀 전체 테스트 실행 중..."
-              pytest tests/ -v --headed --browser=${{ inputs.browser }}
+              pytest tests/ -v --browser=${{ inputs.browser }}
               ;;
             "👤 구성원 (User)")
               echo "👤 구성원 테스트 실행 중..."
-              pytest tests/test_user.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_user.py -v --browser=${{ inputs.browser }}
               ;;
             "📇 외부 연락처 (Contact)")
               echo "📇 외부 연락처 테스트 실행 중..."
-              pytest tests/test_contact.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_contact.py -v --browser=${{ inputs.browser }}
               ;;
             "👥 그룹 (Group)")
               echo "👥 그룹 테스트 실행 중..."
-              pytest tests/test_group.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_group.py -v --browser=${{ inputs.browser }}
               ;;
             "🌐 외부 그룹 (External Group)")
               echo "🌐 외부 그룹 테스트 실행 중..."
-              pytest tests/test_external_group.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_external_group.py -v --browser=${{ inputs.browser }}
               ;;
             "🏢 조직 (OrgUnit)")
               echo "🏢 조직 테스트 실행 중..."
-              pytest tests/test_orgunit.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_orgunit.py -v --browser=${{ inputs.browser }}
               ;;
             "💼 직책 (Position)")
               echo "💼 직책 테스트 실행 중..."
-              pytest tests/test_position.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_position.py -v --browser=${{ inputs.browser }}
               ;;
             "📊 직급 (Level)")
               echo "📊 직급 테스트 실행 중..."
-              pytest tests/test_level.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_level.py -v --browser=${{ inputs.browser }}
               ;;
             "📌 상태 (Status)")
               echo "📌 상태 테스트 실행 중..."
-              pytest tests/test_status.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_status.py -v --browser=${{ inputs.browser }}
               ;;
             "👔 사용자 유형 (UserType)")
               echo "👔 사용자 유형 테스트 실행 중..."
-              pytest tests/test_usertype.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_usertype.py -v --browser=${{ inputs.browser }}
               ;;
             "🏷️ 회사 태그 (Company Tag)")
               echo "🏷️ 회사 태그 테스트 실행 중..."
-              pytest tests/test_company_tag.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_company_tag.py -v --browser=${{ inputs.browser }}
               ;;
             "📍 MY 태그 (MY Tag)")
               echo "📍 MY 태그 테스트 실행 중..."
-              pytest tests/test_my_tag.py -v --headed --browser=${{ inputs.browser }}
+              pytest tests/test_my_tag.py -v --browser=${{ inputs.browser }}
               ;;
           esac
       
