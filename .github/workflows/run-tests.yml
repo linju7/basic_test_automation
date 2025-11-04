@@ -54,9 +54,9 @@ jobs:
       - name: 🔧 환경 설정
         run: |
           cat << EOF > .env
-          ENVIRONMENT=${{ secrets.ENVIRONMENT }}
-          ADMIN_ID=${{ secrets.ADMIN_ID }}
-          ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          TEST_ENV=${{ secrets.SERVER }}
+          REAL_DOMAIN=${{ secrets.REAL_DOMAIN }}
+          PASSWORD=${{ secrets.PASSWORD }}
           HEADLESS=true
           SLOW_MO=0
           EOF
@@ -65,9 +65,9 @@ jobs:
       - name: 🧪 테스트 실행
         env:
           PYTHONPATH: ${{ github.workspace }}
-          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
-          ADMIN_ID: ${{ secrets.ADMIN_ID }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          TEST_ENV: ${{ secrets.SERVER }}
+          REAL_DOMAIN: ${{ secrets.REAL_DOMAIN }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           # 이모지 제거하고 실제 테스트 매핑
           case "${{ inputs.test_target }}" in
