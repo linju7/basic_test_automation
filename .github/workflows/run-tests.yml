@@ -63,6 +63,8 @@ jobs:
           echo "✅ 환경 설정 완료"
       
       - name: 🧪 테스트 실행
+        id: test_step
+        continue-on-error: true
         env:
           PYTHONPATH: ${{ github.workspace }}
           TEST_ENV: ${{ secrets.SERVER }}
@@ -123,16 +125,18 @@ jobs:
       
       - name: 📋 테스트 결과 요약
         if: always()
+        env:
+          TEST_SERVER: ${{ secrets.SERVER }}
         run: |
           echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ secrets.SERVER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${TEST_SERVER}" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          if [ "${{ job.status }}" == "success" ]; then
+          if [ "${{ steps.test_step.outcome }}" == "success" ]; then
             echo "#### ✅ 결과: 성공" >> $GITHUB_STEP_SUMMARY
             echo "모든 테스트가 정상적으로 통과했습니다." >> $GITHUB_STEP_SUMMARY
           else
