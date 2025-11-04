@@ -1,0 +1,153 @@
+name: 🧪 자동화 테스트 실행
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_target:
+        description: '📋 테스트 선택'
+        required: true
+        type: choice
+        default: '🎯 전체 테스트'
+        options:
+          - '🎯 전체 테스트'
+          - '👤 구성원 (User)'
+          - '📇 외부 연락처 (Contact)'
+          - '👥 그룹 (Group)'
+          - '🌐 외부 그룹 (External Group)'
+          - '🏢 조직 (OrgUnit)'
+          - '💼 직책 (Position)'
+          - '📊 직급 (Level)'
+          - '📌 상태 (Status)'
+          - '👔 사용자 유형 (UserType)'
+          - '🏷️ 회사 태그 (Company Tag)'
+          - '📍 MY 태그 (MY Tag)'
+      
+      browser:
+        description: '🌐 브라우저'
+        required: false
+        type: choice
+        default: 'chromium'
+        options:
+          - chromium
+          - firefox
+          - webkit
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    # 테스트 이름을 동적으로 표시
+    name: ${{ inputs.test_target }}
+    
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.45.1-jammy
+    
+    steps:
+      - name: 📥 코드 체크아웃
+        uses: actions/checkout@v4
+      
+      - name: 📦 의존성 설치
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+          playwright install
+      
+      - name: 🔧 환경 설정
+        run: |
+          cat << EOF > .env
+          ENVIRONMENT=${{ secrets.ENVIRONMENT }}
+          ADMIN_ID=${{ secrets.ADMIN_ID }}
+          ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          HEADLESS=true
+          SLOW_MO=0
+          EOF
+          echo "✅ 환경 설정 완료"
+      
+      - name: 🧪 테스트 실행
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+          ADMIN_ID: ${{ secrets.ADMIN_ID }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          # 이모지 제거하고 실제 테스트 매핑
+          case "${{ inputs.test_target }}" in
+            "🎯 전체 테스트")
+              echo "🚀 전체 테스트 실행 중..."
+              pytest tests/ -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "👤 구성원 (User)")
+              echo "👤 구성원 테스트 실행 중..."
+              pytest tests/test_user.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "📇 외부 연락처 (Contact)")
+              echo "📇 외부 연락처 테스트 실행 중..."
+              pytest tests/test_contact.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "👥 그룹 (Group)")
+              echo "👥 그룹 테스트 실행 중..."
+              pytest tests/test_group.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "🌐 외부 그룹 (External Group)")
+              echo "🌐 외부 그룹 테스트 실행 중..."
+              pytest tests/test_external_group.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "🏢 조직 (OrgUnit)")
+              echo "🏢 조직 테스트 실행 중..."
+              pytest tests/test_orgunit.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "💼 직책 (Position)")
+              echo "💼 직책 테스트 실행 중..."
+              pytest tests/test_position.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "📊 직급 (Level)")
+              echo "📊 직급 테스트 실행 중..."
+              pytest tests/test_level.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "📌 상태 (Status)")
+              echo "📌 상태 테스트 실행 중..."
+              pytest tests/test_status.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "👔 사용자 유형 (UserType)")
+              echo "👔 사용자 유형 테스트 실행 중..."
+              pytest tests/test_usertype.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "🏷️ 회사 태그 (Company Tag)")
+              echo "🏷️ 회사 태그 테스트 실행 중..."
+              pytest tests/test_company_tag.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+            "📍 MY 태그 (MY Tag)")
+              echo "📍 MY 태그 테스트 실행 중..."
+              pytest tests/test_my_tag.py -v --browser=${{ inputs.browser }} --html=report.html --self-contained-html
+              ;;
+          esac
+      
+      - name: 📊 테스트 결과 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-${{ github.run_number }}
+          path: |
+            report.html
+            test-results/
+          retention-days: 30
+      
+      - name: 📸 실패 스크린샷 업로드
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots-${{ github.run_number }}
+          path: test-results/**/*.png
+          retention-days: 7
+      
+      - name: 📋 테스트 요약
+        if: always()
+        run: |
+          echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ secrets.ENVIRONMENT }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 상세 결과는 **Artifacts**에서 다운로드하세요." >> $GITHUB_STEP_SUMMARY
+
