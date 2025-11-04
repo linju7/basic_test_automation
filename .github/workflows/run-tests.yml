@@ -123,24 +123,29 @@ jobs:
               ;;
           esac
       
-      - name: 📋 테스트 결과 요약
-        if: always()
-        env:
-          TEST_SERVER: ${{ secrets.SERVER }}
+      - name: 📋 테스트 결과 요약 (성공)
+        if: steps.test_step.outcome == 'success'
         run: |
           echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${TEST_SERVER}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ secrets.SERVER }}" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ steps.test_step.outcome }}" == "success" ]; then
-            echo "#### ✅ 결과: 성공" >> $GITHUB_STEP_SUMMARY
-            echo "모든 테스트가 정상적으로 통과했습니다." >> $GITHUB_STEP_SUMMARY
-          else
-            echo "#### ❌ 결과: 실패" >> $GITHUB_STEP_SUMMARY
-            echo "위 로그에서 실패한 테스트를 확인하세요." >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "#### ✅ 결과: 성공" >> $GITHUB_STEP_SUMMARY
+          echo "모든 테스트가 정상적으로 통과했습니다." >> $GITHUB_STEP_SUMMARY
+      
+      - name: 📋 테스트 결과 요약 (실패)
+        if: steps.test_step.outcome != 'success'
+        run: |
+          echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ secrets.SERVER }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### ❌ 결과: 실패" >> $GITHUB_STEP_SUMMARY
+          echo "위 로그에서 실패한 테스트를 확인하세요." >> $GITHUB_STEP_SUMMARY
 
