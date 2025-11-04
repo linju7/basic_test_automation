@@ -66,6 +66,8 @@ jobs:
           cat << EOF > .env
           TEST_ENV=${{ inputs.environment }}
           REAL_DOMAIN=${{ secrets.REAL_DOMAIN }}
+          ALPHA_DOMAIN=${{ secrets.ALPHA_DOMAIN }}
+          STAGE_DOMAIN=${{ secrets.STAGE_DOMAIN }}
           PASSWORD=${{ secrets.PASSWORD }}
           HEADLESS=true
           SLOW_MO=0
@@ -76,8 +78,10 @@ jobs:
         id: test_step
         env:
           PYTHONPATH: ${{ github.workspace }}
-          TEST_ENV: ${{ secrets.SERVER }}
+          TEST_ENV: ${{ inputs.environment }}
           REAL_DOMAIN: ${{ secrets.REAL_DOMAIN }}
+          ALPHA_DOMAIN: ${{ secrets.ALPHA_DOMAIN }}
+          STAGE_DOMAIN: ${{ secrets.STAGE_DOMAIN }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           # 이모지 제거하고 실제 테스트 매핑
