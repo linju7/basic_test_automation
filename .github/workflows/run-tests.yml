@@ -22,6 +22,16 @@ on:
           - '🏷️ 회사 태그 (Company Tag)'
           - '📍 MY 태그 (MY Tag)'
       
+      instance:
+        description: '🖥️ 인스턴스'
+        required: true
+        type: choice
+        default: 'kr1'
+        options:
+          - kr1
+          - jp1
+          - jp2
+      
       environment:
         description: '🌍 실행 환경'
         required: true
@@ -31,16 +41,6 @@ on:
           - real
           - stage
           - alpha
-      
-      browser:
-        description: '🌐 브라우저'
-        required: false
-        type: choice
-        default: 'chromium'
-        options:
-          - chromium
-          - firefox
-          - webkit
 
 jobs:
   test:
@@ -62,77 +62,101 @@ jobs:
           playwright install
       
       - name: 🔧 환경 설정
+        env:
+          KR1_REAL_DOMAIN: ${{ secrets.KR1_REAL_DOMAIN }}
+          KR1_ALPHA_DOMAIN: ${{ secrets.KR1_ALPHA_DOMAIN }}
+          KR1_STAGE_DOMAIN: ${{ secrets.KR1_STAGE_DOMAIN }}
+          JP1_REAL_DOMAIN: ${{ secrets.JP1_REAL_DOMAIN }}
+          JP1_ALPHA_DOMAIN: ${{ secrets.JP1_ALPHA_DOMAIN }}
+          JP1_STAGE_DOMAIN: ${{ secrets.JP1_STAGE_DOMAIN }}
+          JP2_REAL_DOMAIN: ${{ secrets.JP2_REAL_DOMAIN }}
+          JP2_ALPHA_DOMAIN: ${{ secrets.JP2_ALPHA_DOMAIN }}
+          JP2_STAGE_DOMAIN: ${{ secrets.JP2_STAGE_DOMAIN }}
         run: |
+          # 인스턴스와 환경에 따라 도메인 선택
+          INSTANCE_UPPER=$(echo "${{ inputs.instance }}" | tr '[:lower:]' '[:upper:]')
+          
+          # 환경 변수 이름 생성 및 값 가져오기
+          REAL_DOMAIN_VAR="${INSTANCE_UPPER}_REAL_DOMAIN"
+          ALPHA_DOMAIN_VAR="${INSTANCE_UPPER}_ALPHA_DOMAIN"
+          STAGE_DOMAIN_VAR="${INSTANCE_UPPER}_STAGE_DOMAIN"
+          
           cat << EOF > .env
           TEST_ENV=${{ inputs.environment }}
-          REAL_DOMAIN=${{ secrets.REAL_DOMAIN }}
-          ALPHA_DOMAIN=${{ secrets.ALPHA_DOMAIN }}
-          STAGE_DOMAIN=${{ secrets.STAGE_DOMAIN }}
+          REAL_DOMAIN=${!REAL_DOMAIN_VAR}
+          ALPHA_DOMAIN=${!ALPHA_DOMAIN_VAR}
+          STAGE_DOMAIN=${!STAGE_DOMAIN_VAR}
           PASSWORD=${{ secrets.PASSWORD }}
           HEADLESS=true
           SLOW_MO=0
           EOF
-          echo "✅ 환경 설정 완료"
+          echo "✅ 환경 설정 완료 (인스턴스: ${{ inputs.instance }}, 환경: ${{ inputs.environment }})"
       
       - name: 🧪 테스트 실행
         id: test_step
         env:
           PYTHONPATH: ${{ github.workspace }}
           TEST_ENV: ${{ inputs.environment }}
-          REAL_DOMAIN: ${{ secrets.REAL_DOMAIN }}
-          ALPHA_DOMAIN: ${{ secrets.ALPHA_DOMAIN }}
-          STAGE_DOMAIN: ${{ secrets.STAGE_DOMAIN }}
+          KR1_REAL_DOMAIN: ${{ secrets.KR1_REAL_DOMAIN }}
+          KR1_ALPHA_DOMAIN: ${{ secrets.KR1_ALPHA_DOMAIN }}
+          KR1_STAGE_DOMAIN: ${{ secrets.KR1_STAGE_DOMAIN }}
+          JP1_REAL_DOMAIN: ${{ secrets.JP1_REAL_DOMAIN }}
+          JP1_ALPHA_DOMAIN: ${{ secrets.JP1_ALPHA_DOMAIN }}
+          JP1_STAGE_DOMAIN: ${{ secrets.JP1_STAGE_DOMAIN }}
+          JP2_REAL_DOMAIN: ${{ secrets.JP2_REAL_DOMAIN }}
+          JP2_ALPHA_DOMAIN: ${{ secrets.JP2_ALPHA_DOMAIN }}
+          JP2_STAGE_DOMAIN: ${{ secrets.JP2_STAGE_DOMAIN }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           # 이모지 제거하고 실제 테스트 매핑
           case "${{ inputs.test_target }}" in
             "🎯 전체 테스트")
               echo "🚀 전체 테스트 실행 중..."
-              pytest tests/ -v --browser=${{ inputs.browser }}
+              pytest tests/ -v --browser=chromium
               ;;
             "👤 구성원 (User)")
               echo "👤 구성원 테스트 실행 중..."
-              pytest tests/test_user.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_user.py -v --browser=chromium
               ;;
             "📇 외부 연락처 (Contact)")
               echo "📇 외부 연락처 테스트 실행 중..."
-              pytest tests/test_contact.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_contact.py -v --browser=chromium
               ;;
             "👥 그룹 (Group)")
               echo "👥 그룹 테스트 실행 중..."
-              pytest tests/test_group.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_group.py -v --browser=chromium
               ;;
             "🌐 외부 그룹 (External Group)")
               echo "🌐 외부 그룹 테스트 실행 중..."
-              pytest tests/test_external_group.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_external_group.py -v --browser=chromium
               ;;
             "🏢 조직 (OrgUnit)")
               echo "🏢 조직 테스트 실행 중..."
-              pytest tests/test_orgunit.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_orgunit.py -v --browser=chromium
               ;;
             "💼 직책 (Position)")
               echo "💼 직책 테스트 실행 중..."
-              pytest tests/test_position.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_position.py -v --browser=chromium
               ;;
             "📊 직급 (Level)")
               echo "📊 직급 테스트 실행 중..."
-              pytest tests/test_level.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_level.py -v --browser=chromium
               ;;
             "📌 상태 (Status)")
               echo "📌 상태 테스트 실행 중..."
-              pytest tests/test_status.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_status.py -v --browser=chromium
               ;;
             "👔 사용자 유형 (UserType)")
               echo "👔 사용자 유형 테스트 실행 중..."
-              pytest tests/test_usertype.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_usertype.py -v --browser=chromium
               ;;
             "🏷️ 회사 태그 (Company Tag)")
               echo "🏷️ 회사 태그 테스트 실행 중..."
-              pytest tests/test_company_tag.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_company_tag.py -v --browser=chromium
               ;;
             "📍 MY 태그 (MY Tag)")
               echo "📍 MY 태그 테스트 실행 중..."
-              pytest tests/test_my_tag.py -v --browser=${{ inputs.browser }}
+              pytest tests/test_my_tag.py -v --browser=chromium
               ;;
           esac
       
@@ -142,8 +166,9 @@ jobs:
           echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **인스턴스:** ${{ inputs.instance }}" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 환경:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **브라우저:** chromium" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### ✅ 결과: 성공" >> $GITHUB_STEP_SUMMARY
@@ -155,8 +180,9 @@ jobs:
           echo "### 🧪 테스트 실행 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **브라우저:** ${{ inputs.browser }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **인스턴스:** ${{ inputs.instance }}" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 환경:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **브라우저:** chromium" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### ❌ 결과: 실패" >> $GITHUB_STEP_SUMMARY
