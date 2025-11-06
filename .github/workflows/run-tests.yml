@@ -62,6 +62,7 @@ jobs:
           playwright install
       
       - name: 🔧 환경 설정
+        shell: bash
         env:
           KR1_REAL_DOMAIN: ${{ secrets.KR1_REAL_DOMAIN }}
           KR1_ALPHA_DOMAIN: ${{ secrets.KR1_ALPHA_DOMAIN }}
@@ -73,19 +74,21 @@ jobs:
           JP2_ALPHA_DOMAIN: ${{ secrets.JP2_ALPHA_DOMAIN }}
           JP2_STAGE_DOMAIN: ${{ secrets.JP2_STAGE_DOMAIN }}
         run: |
-          # 인스턴스와 환경에 따라 도메인 선택
+          # 인스턴스 대문자 변환
           INSTANCE_UPPER=$(echo "${{ inputs.instance }}" | tr '[:lower:]' '[:upper:]')
-          
-          # 환경 변수 이름 생성 및 값 가져오기
-          REAL_DOMAIN_VAR="${INSTANCE_UPPER}_REAL_DOMAIN"
-          ALPHA_DOMAIN_VAR="${INSTANCE_UPPER}_ALPHA_DOMAIN"
-          STAGE_DOMAIN_VAR="${INSTANCE_UPPER}_STAGE_DOMAIN"
           
           cat << EOF > .env
           TEST_ENV=${{ inputs.environment }}
-          REAL_DOMAIN=${!REAL_DOMAIN_VAR}
-          ALPHA_DOMAIN=${!ALPHA_DOMAIN_VAR}
-          STAGE_DOMAIN=${!STAGE_DOMAIN_VAR}
+          INSTANCE=${{ inputs.instance }}
+          KR1_REAL_DOMAIN=${KR1_REAL_DOMAIN}
+          KR1_ALPHA_DOMAIN=${KR1_ALPHA_DOMAIN}
+          KR1_STAGE_DOMAIN=${KR1_STAGE_DOMAIN}
+          JP1_REAL_DOMAIN=${JP1_REAL_DOMAIN}
+          JP1_ALPHA_DOMAIN=${JP1_ALPHA_DOMAIN}
+          JP1_STAGE_DOMAIN=${JP1_STAGE_DOMAIN}
+          JP2_REAL_DOMAIN=${JP2_REAL_DOMAIN}
+          JP2_ALPHA_DOMAIN=${JP2_ALPHA_DOMAIN}
+          JP2_STAGE_DOMAIN=${JP2_STAGE_DOMAIN}
           PASSWORD=${{ secrets.PASSWORD }}
           HEADLESS=true
           SLOW_MO=0
@@ -94,9 +97,11 @@ jobs:
       
       - name: 🧪 테스트 실행
         id: test_step
+        shell: bash
         env:
           PYTHONPATH: ${{ github.workspace }}
           TEST_ENV: ${{ inputs.environment }}
+          INSTANCE: ${{ inputs.instance }}
           KR1_REAL_DOMAIN: ${{ secrets.KR1_REAL_DOMAIN }}
           KR1_ALPHA_DOMAIN: ${{ secrets.KR1_ALPHA_DOMAIN }}
           KR1_STAGE_DOMAIN: ${{ secrets.KR1_STAGE_DOMAIN }}
