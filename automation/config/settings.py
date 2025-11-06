@@ -8,6 +8,7 @@ class Settings:
 
     # 테스트 서버 -> .env의 환경설정 값을 불러오고, 설정되지 않은 경우 real서버로 설정
     ENVIRONMENT = os.getenv("TEST_ENV", "real")
+    INSTANCE = os.getenv("INSTANCE", "jp2")
 
     BASE_URLS = {
         "alpha": "https://alpha-contact.worksmobile.com",
@@ -84,7 +85,7 @@ class Settings:
     def get_account(cls, account_type: str) -> str:
         """환경 변수에서 계정 정보(id, password) 반환"""
         if account_type == "domain":
-            env_key = f"{cls.ENVIRONMENT.upper()}_DOMAIN"
+            env_key = f"{cls.INSTANCE.upper()}_{cls.ENVIRONMENT.upper()}_DOMAIN"
         elif account_type == "password":
             env_key = "PASSWORD"
         else:

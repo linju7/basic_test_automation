@@ -45,8 +45,10 @@ def find_my_tag_in_list(page, app_state=None):
     for i in range(tag_cells.count()):
         cell_text = tag_cells.nth(i).text_content().strip()
         if cell_text == tag_name:
+            print(f"[성공] MY 태그 '{tag_name}' 조회 성공")
             return True
     
+    print(f"[실패] MY 태그 '{tag_name}' 조회 실패")
     return False
 
 # =====================
