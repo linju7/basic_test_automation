@@ -107,10 +107,11 @@ def wait_and_click(page, selector, timeout=5000):
 def open_user_add_page(page):
     """구성원 추가 페이지 열기"""
     page.goto(settings.USERS_URLS[settings.ENVIRONMENT])
-    page.wait_for_selector(BTN_ADD_MEMBER, timeout=5000)
+    # GitHub Actions 환경을 고려해 타임아웃 증가
+    page.wait_for_selector(BTN_ADD_MEMBER, timeout=30000)
     if page.locator(BTN_ADD_MEMBER).count() > 0:
         page.locator(BTN_ADD_MEMBER).click()
-        page.wait_for_selector(BTN_SHOW_ALL, timeout=5000)
+        page.wait_for_selector(BTN_SHOW_ALL, timeout=30000)
         return True
     return False
 
@@ -200,7 +201,7 @@ def click_add_button(page):
     if page.locator(BTN_ADD).count() > 0:
         page.locator(BTN_ADD).click()
 
-    page.wait_for_selector(MODAL_SUCCESS_BTN_CONFIRM, timeout=5000)
+    page.wait_for_selector(MODAL_SUCCESS_BTN_CONFIRM, timeout=30000)
     if page.locator(MODAL_SUCCESS_BTN_CONFIRM).count() > 0:
         page.locator(MODAL_SUCCESS_BTN_CONFIRM).click()
 

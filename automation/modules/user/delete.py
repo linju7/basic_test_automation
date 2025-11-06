@@ -24,21 +24,21 @@ PERMANENT_FINISH_BUTTON = 'div.ly_common button.lw_btn_point:text("확인")'
 
 def open_manage_menu(page):
     """관리 메뉴 열기"""
-    page.wait_for_selector(MANAGE_BUTTON, timeout=10000)
+    page.wait_for_selector(MANAGE_BUTTON, timeout=30000)
     page.locator(MANAGE_BUTTON).click()
     return True
 
 
 def click_account_delete(page):
     """계정 삭제 메뉴 클릭"""
-    page.wait_for_selector(DROPDOWN_DELETE, timeout=10000)
+    page.wait_for_selector(DROPDOWN_DELETE, timeout=30000)
     page.locator(DROPDOWN_DELETE).click()
     return True
 
 
 def check_delete_boxes(page):
     """삭제 체크박스 전체 클릭"""
-    page.wait_for_selector(DELETE_LAYER, timeout=20000)
+    page.wait_for_selector(DELETE_LAYER, timeout=30000)
     delete_boxes = page.locator(DELETE_CHECKBOXES)
     for i in range(delete_boxes.count()):
         delete_boxes.nth(i).scroll_into_view_if_needed()
@@ -48,21 +48,21 @@ def check_delete_boxes(page):
 
 def click_delete_confirm(page):
     """삭제 확인 버튼 클릭"""
-    page.wait_for_selector(DELETE_CONFIRM_BUTTON, timeout=10000)
+    page.wait_for_selector(DELETE_CONFIRM_BUTTON, timeout=30000)
     page.locator(DELETE_CONFIRM_BUTTON).click()
     return True
 
 
 def click_permanent_delete(page):
     """영구 삭제 메뉴 클릭"""
-    page.wait_for_selector(PERMANENT_DELETE_MENU, timeout=10000)
+    page.wait_for_selector(PERMANENT_DELETE_MENU, timeout=30000)
     page.locator(PERMANENT_DELETE_MENU).click()
     return True
 
 
 def check_permanent_boxes(page):
     """영구 삭제 체크박스 전체 클릭"""
-    page.wait_for_selector(PERMANENT_LAYER, timeout=10000)
+    page.wait_for_selector(PERMANENT_LAYER, timeout=30000)
     perm_boxes = page.locator(PERMANENT_CHECKBOXES)
     for i in range(perm_boxes.count()):
         perm_boxes.nth(i).scroll_into_view_if_needed()
@@ -72,10 +72,10 @@ def check_permanent_boxes(page):
 
 def confirm_permanent_delete(page):
     """영구 삭제 확인"""
-    page.wait_for_selector(PERMANENT_CONFIRM_BUTTON, timeout=10000)
+    page.wait_for_selector(PERMANENT_CONFIRM_BUTTON, timeout=30000)
     page.locator(PERMANENT_CONFIRM_BUTTON).click()
     
-    page.wait_for_selector(PERMANENT_FINISH_BUTTON, timeout=10000)
+    page.wait_for_selector(PERMANENT_FINISH_BUTTON, timeout=30000)
     page.locator(PERMANENT_FINISH_BUTTON).click()
     return True
 

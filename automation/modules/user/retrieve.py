@@ -57,9 +57,9 @@ FIELD_GENERAL_SELECTORS_TEMPLATE = [
 def access_user_detail(page: Page, user_id: str):
     """사용자 상세 페이지 접근"""
     page.goto(settings.USERS_URLS[settings.ENVIRONMENT])
-    page.wait_for_selector(BTN_SEARCH, timeout=10000)
+    page.wait_for_selector(BTN_SEARCH, timeout=30000)
     page.locator(BTN_SEARCH).click()
-    page.wait_for_selector(INPUT_SEARCH, timeout=10000)
+    page.wait_for_selector(INPUT_SEARCH, timeout=30000)
     safe_fill(page, INPUT_SEARCH, user_id)
     page.wait_for_timeout(2000) 
     page.locator(INPUT_SEARCH).press('Enter')

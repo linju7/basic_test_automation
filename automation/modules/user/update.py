@@ -47,7 +47,7 @@ MULTILINGUAL_PLACEHOLDERS = [
 
 def click_modify_button(page):
     """구성원 수정 버튼 클릭"""
-    page.wait_for_selector(BTN_MODIFY_MEMBER, timeout=10000)
+    page.wait_for_selector(BTN_MODIFY_MEMBER, timeout=30000)
     page.locator(BTN_MODIFY_MEMBER).click()
     return True
 
