@@ -22,11 +22,6 @@ basic_test_automation/
 │   │   └── usertype/         # 사용자 유형
 │   │   └── company_tag/      # 회사 태그
 │   │   └── my_tag/           # 마이 태그
-│   └── pages/                # 페이지 객체 모델
-│       ├── contact_page.py
-│       ├── group_page.py
-│       ├── orgunit_page.py
-│       └── user_page.py
 ├── tests/                   # 테스트 케이스
 │   ├── conftest.py          # pytest 설정 및 픽스처
 │   ├── test_contact.py      # 연락처 테스트
