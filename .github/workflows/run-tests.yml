@@ -31,16 +31,6 @@ on:
           - kr1
           - jp1
           - jp2
-      
-      environment:
-        description: '🌍 실행 환경'
-        required: true
-        type: choice
-        default: 'real'
-        options:
-          - real
-          - stage
-          - alpha
 
 jobs:
   test:
@@ -48,6 +38,9 @@ jobs:
     
     # 테스트 이름을 동적으로 표시
     name: ${{ inputs.test_target }}
+    
+    # 허용된 브랜치만 실행 가능
+    if: contains(fromJSON('["real", "stage", "alpha"]'), github.ref_name)
     
     container:
       image: mcr.microsoft.com/playwright/python:v1.45.1-jammy
@@ -78,7 +71,7 @@ jobs:
           INSTANCE_UPPER=$(echo "${{ inputs.instance }}" | tr '[:lower:]' '[:upper:]')
           
           cat << EOF > .env
-          TEST_ENV=${{ inputs.environment }}
+          TEST_ENV=${{ github.ref_name }}
           INSTANCE=${{ inputs.instance }}
           KR1_REAL_DOMAIN=${KR1_REAL_DOMAIN}
           KR1_ALPHA_DOMAIN=${KR1_ALPHA_DOMAIN}
@@ -93,14 +86,14 @@ jobs:
           HEADLESS=true
           SLOW_MO=0
           EOF
-          echo "✅ 환경 설정 완료 (인스턴스: ${{ inputs.instance }}, 환경: ${{ inputs.environment }})"
+          echo "✅ 환경 설정 완료 (인스턴스: ${{ inputs.instance }}, 환경: ${{ github.ref_name }})"
       
       - name: 🧪 테스트 실행
         id: test_step
         shell: bash
         env:
           PYTHONPATH: ${{ github.workspace }}
-          TEST_ENV: ${{ inputs.environment }}
+          TEST_ENV: ${{ github.ref_name }}
           INSTANCE: ${{ inputs.instance }}
           KR1_REAL_DOMAIN: ${{ secrets.KR1_REAL_DOMAIN }}
           KR1_ALPHA_DOMAIN: ${{ secrets.KR1_ALPHA_DOMAIN }}
@@ -172,7 +165,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **인스턴스:** ${{ inputs.instance }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** chromium" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -186,7 +179,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **인스턴스:** ${{ inputs.instance }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** chromium" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
