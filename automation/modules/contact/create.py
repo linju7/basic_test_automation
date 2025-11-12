@@ -7,8 +7,10 @@ from automation.core.safe_fill import safe_fill
 # =====================
 
 # 버튼/레이어
-BTN_NEW = 'a:has-text("새로 만들기")'
-DROPDOWN_DIRECT = 'div.main_pane div.ly_context ul li a:has-text("외부 연락처 직접 입력 ")'
+BTN_NEW = 'a.skin_corp_bg strong:text("새로 만들기")'
+DROPDOWN_EXTERNAL_CONTACT = 'div.ly_context ul li a:has-text("외부 연락처 추가")'
+LAYER_CONTACT_TYPE = 'div.dh_layer div.type_c h4:text("외부 연락처 추가")'
+LINK_DIRECT_INPUT = 'div.dh_layer a.link:has(strong.title:text("연락처 직접 입력"))'
 LAYER_CONTACT_ADD = 'div.layer_pd h3.lc_h3:text("외부 연락처 만들기")'
 BTN_DETAIL = 'div.fd_btnarea a:text-is("자세히 입력하기")'
 BTN_SAVE = 'div.btn_area button.btn_point:text-is("저장")'
@@ -37,16 +39,20 @@ DROPDOWN_ADDRESS_DIRECT = 'ul[style*="translateZ"] li a:has-text("직접입력")
 
 def open_contact_add_layer(page):
     """외부 연락처 추가 레이어 열기"""
+    # 1단계: 새로 만들기 버튼 클릭
     page.wait_for_selector(BTN_NEW, timeout=5000)
     page.locator(BTN_NEW).click()
     
-    # 드롭다운이 보일 때까지 기다리기
-    page.wait_for_selector('div.ly_context', timeout=5000, state='visible')
-    page.wait_for_timeout(500)  
+    # 2단계: 드롭다운에서 "외부 연락처 추가" 선택
+    page.wait_for_selector(DROPDOWN_EXTERNAL_CONTACT, timeout=5000, state='visible')
+    page.locator(DROPDOWN_EXTERNAL_CONTACT).click()
     
-    # 외부연락처 직접 입력 선택
-    page.wait_for_selector(DROPDOWN_DIRECT, timeout=3000, state='visible')
-    page.locator(DROPDOWN_DIRECT).first.click()
+    # 3단계: 레이어가 열리면 "연락처 직접 입력" 선택
+    page.wait_for_selector(LAYER_CONTACT_TYPE, timeout=5000)
+    page.wait_for_selector(LINK_DIRECT_INPUT, timeout=5000, state='visible')
+    page.locator(LINK_DIRECT_INPUT).click()
+    
+    # 4단계: 외부 연락처 만들기 레이어 확인
     page.wait_for_selector(LAYER_CONTACT_ADD, timeout=5000)
     return True
 
@@ -122,9 +128,11 @@ def create_contact(page, app_state=None):
         return False
     if not fill_contact_info(page, app_state):
         print("외부 연락처 추가 자동화 실패 - fill_contact_info\n")
+        page.pause()
         return False
     if not click_save_button(page):
         print("외부 연락처 추가 자동화 실패 - click_save_button\n")
+        page.pause()
         return False
     print("외부 연락처 추가 자동화 완료\n")
     return True

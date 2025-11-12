@@ -35,8 +35,8 @@ class Settings:
     }
 
     CONTACT_URLS = {
-        "alpha": "https://alpha-contact.worksmobile.com/v2/p/shared/contact",
-        "stage": "https://stage.contact.worksmobile.com/v2/p/shared/contact",
+        "alpha": "https://alpha-contact.worksmobile.com/p/web/shared/contact",
+        "stage": "https://stage.contact.worksmobile.com/p/web/shared/contact",
         "real" : "https://contact.worksmobile.com/v2/p/shared/contact"
     }
 
