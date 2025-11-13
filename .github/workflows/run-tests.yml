@@ -33,14 +33,67 @@ on:
           - jp2
 
 jobs:
+  # 브랜치 검증 Job
+  validate-branch:
+    runs-on: ubuntu-latest
+    name: 🔍 브랜치 검증
+    
+    steps:
+      - name: ✅ real 브랜치 확인
+        if: github.ref_name == 'real'
+        run: |
+          echo "### ✅ 브랜치 검증 성공" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "현재 브랜치: **${{ github.ref_name }}**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "real 브랜치가 확인되었습니다. 테스트를 진행합니다." >> $GITHUB_STEP_SUMMARY
+      
+      - name: ❌ real 브랜치가 아님 - 테스트 중단
+        if: github.ref_name != 'real'
+        run: |
+          echo "### ❌ 브랜치 검증 실패" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**현재 브랜치: \`${{ github.ref_name }}\`**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ⚠️ 오류: real 브랜치를 선택해야 합니다" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "이 워크플로우는 **real 브랜치에서만** 실행할 수 있습니다." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 해결 방법:" >> $GITHUB_STEP_SUMMARY
+          echo "1. GitHub 저장소로 이동" >> $GITHUB_STEP_SUMMARY
+          echo "2. \`real\` 브랜치로 전환" >> $GITHUB_STEP_SUMMARY
+          echo "3. Actions 탭에서 다시 워크플로우 실행" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🚫 **테스트가 실행되지 않았습니다.**" >> $GITHUB_STEP_SUMMARY
+          
+          echo ""
+          echo "=============================================="
+          echo "❌ 오류: real 브랜치를 선택해야 합니다"
+          echo "=============================================="
+          echo ""
+          echo "현재 브랜치: ${{ github.ref_name }}"
+          echo "허용된 브랜치: real"
+          echo ""
+          echo "이 워크플로우는 real 브랜치에서만 실행할 수 있습니다."
+          echo "real 브랜치로 전환한 후 다시 시도해주세요."
+          echo ""
+          echo "=============================================="
+          
+          exit 1
+
   test:
     runs-on: ubuntu-latest
+    
+    # 브랜치 검증 후에만 실행
+    needs: validate-branch
     
     # 테스트 이름을 동적으로 표시
     name: ${{ inputs.test_target }}
     
-    # 허용된 브랜치만 실행 가능
-    if: contains(fromJSON('["real", "stage", "alpha"]'), github.ref_name)
+    # real 브랜치에서만 실행
+    if: github.ref_name == 'real'
     
     container:
       image: mcr.microsoft.com/playwright/python:v1.45.1-jammy
@@ -58,52 +111,31 @@ jobs:
         shell: bash
         env:
           KR1_REAL_DOMAIN: ${{ secrets.KR1_REAL_DOMAIN }}
-          KR1_ALPHA_DOMAIN: ${{ secrets.KR1_ALPHA_DOMAIN }}
-          KR1_STAGE_DOMAIN: ${{ secrets.KR1_STAGE_DOMAIN }}
           JP1_REAL_DOMAIN: ${{ secrets.JP1_REAL_DOMAIN }}
-          JP1_ALPHA_DOMAIN: ${{ secrets.JP1_ALPHA_DOMAIN }}
-          JP1_STAGE_DOMAIN: ${{ secrets.JP1_STAGE_DOMAIN }}
           JP2_REAL_DOMAIN: ${{ secrets.JP2_REAL_DOMAIN }}
-          JP2_ALPHA_DOMAIN: ${{ secrets.JP2_ALPHA_DOMAIN }}
-          JP2_STAGE_DOMAIN: ${{ secrets.JP2_STAGE_DOMAIN }}
         run: |
-          # 인스턴스 대문자 변환
-          INSTANCE_UPPER=$(echo "${{ inputs.instance }}" | tr '[:lower:]' '[:upper:]')
-          
           cat << EOF > .env
-          TEST_ENV=${{ github.ref_name }}
+          TEST_ENV=real
           INSTANCE=${{ inputs.instance }}
           KR1_REAL_DOMAIN=${KR1_REAL_DOMAIN}
-          KR1_ALPHA_DOMAIN=${KR1_ALPHA_DOMAIN}
-          KR1_STAGE_DOMAIN=${KR1_STAGE_DOMAIN}
           JP1_REAL_DOMAIN=${JP1_REAL_DOMAIN}
-          JP1_ALPHA_DOMAIN=${JP1_ALPHA_DOMAIN}
-          JP1_STAGE_DOMAIN=${JP1_STAGE_DOMAIN}
           JP2_REAL_DOMAIN=${JP2_REAL_DOMAIN}
-          JP2_ALPHA_DOMAIN=${JP2_ALPHA_DOMAIN}
-          JP2_STAGE_DOMAIN=${JP2_STAGE_DOMAIN}
           PASSWORD=${{ secrets.PASSWORD }}
           HEADLESS=true
           SLOW_MO=0
           EOF
-          echo "✅ 환경 설정 완료 (인스턴스: ${{ inputs.instance }}, 환경: ${{ github.ref_name }})"
+          echo "✅ 환경 설정 완료 (인스턴스: ${{ inputs.instance }}, 환경: real - 운영서버)"
       
       - name: 🧪 테스트 실행
         id: test_step
         shell: bash
         env:
           PYTHONPATH: ${{ github.workspace }}
-          TEST_ENV: ${{ github.ref_name }}
+          TEST_ENV: real
           INSTANCE: ${{ inputs.instance }}
           KR1_REAL_DOMAIN: ${{ secrets.KR1_REAL_DOMAIN }}
-          KR1_ALPHA_DOMAIN: ${{ secrets.KR1_ALPHA_DOMAIN }}
-          KR1_STAGE_DOMAIN: ${{ secrets.KR1_STAGE_DOMAIN }}
           JP1_REAL_DOMAIN: ${{ secrets.JP1_REAL_DOMAIN }}
-          JP1_ALPHA_DOMAIN: ${{ secrets.JP1_ALPHA_DOMAIN }}
-          JP1_STAGE_DOMAIN: ${{ secrets.JP1_STAGE_DOMAIN }}
           JP2_REAL_DOMAIN: ${{ secrets.JP2_REAL_DOMAIN }}
-          JP2_ALPHA_DOMAIN: ${{ secrets.JP2_ALPHA_DOMAIN }}
-          JP2_STAGE_DOMAIN: ${{ secrets.JP2_STAGE_DOMAIN }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           # 이모지 제거하고 실제 테스트 매핑
@@ -165,7 +197,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **인스턴스:** ${{ inputs.instance }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** real (운영서버)" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** chromium" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -179,7 +211,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **선택한 테스트:** ${{ inputs.test_target }}" >> $GITHUB_STEP_SUMMARY
           echo "- **인스턴스:** ${{ inputs.instance }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **실행 환경:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **실행 환경:** real (운영서버)" >> $GITHUB_STEP_SUMMARY
           echo "- **브라우저:** chromium" >> $GITHUB_STEP_SUMMARY
           echo "- **실행 번호:** #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
