@@ -25,6 +25,7 @@ CONFIRM_BUTTON = 'div.type_c.type_c_confirm button.btn_point:has-text("확인")'
 def search_contact(page, contact_name):
     """연락처 검색"""
     page.wait_for_selector(SEARCH_INPUT, timeout=5000)
+    page.wait_for_timeout(2000)
     safe_fill(page, SEARCH_INPUT, contact_name)
     page.wait_for_timeout(2000)
     page.locator(SEARCH_SUBMIT).click()
