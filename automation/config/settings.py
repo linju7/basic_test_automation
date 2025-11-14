@@ -39,6 +39,12 @@ class Settings:
         "stage": "https://stage.contact.worksmobile.com/p/web/shared/contact",
         "real" : "https://contact.worksmobile.com/v2/p/shared/contact"
     }
+    
+    CONTACT_CUSTOM_FIELD_URLS = {
+        "alpha": "https://alpha-admin.worksmobile.com/service/contact/shared#fields",
+        "stage": "https://stage-admin.worksmobile.com/service/contact/shared#fields",
+        "real" : "https://admin.worksmobile.com/service/contact/shared#fields"
+    }
 
     POSITION_URLS = {
         "alpha": "https://alpha-admin.worksmobile.com/member/job/positions",

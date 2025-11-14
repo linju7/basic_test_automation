@@ -27,6 +27,7 @@ class AppState:
         self.contact_info = None
         self.company_tag_name = None
         self.my_tag_name = None
+        self.contact_custom_field_name = None
     
 
 app_state = AppState()
