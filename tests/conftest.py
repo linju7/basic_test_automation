@@ -27,6 +27,8 @@ class AppState:
         self.contact_info = None
         self.company_tag_name = None
         self.my_tag_name = None
+
+        # 어드민에 표시되는 명은 대표명이고, 서비스는 다국명이라서 둘 다 저장함 
         self.contact_custom_field_name = None
         self.contact_custom_field_name_kr = None
     
