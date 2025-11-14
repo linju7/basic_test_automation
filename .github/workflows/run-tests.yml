@@ -21,6 +21,7 @@ on:
           - '👔 사용자 유형 (UserType)'
           - '🏷️ 회사 태그 (Company Tag)'
           - '📍 MY 태그 (MY Tag)'
+          - '📝 연락처 커스텀 필드 (Contact Custom Field)'
       
       instance:
         description: '🖥️ 인스턴스'
@@ -166,6 +167,10 @@ jobs:
             "📍 MY 태그 (MY Tag)")
               echo "📍 MY 태그 테스트 실행 중..."
               pytest tests/test_my_tag.py -v --browser=chromium
+              ;;
+            "📝 연락처 커스텀 필드 (Contact Custom Field)")
+              echo "📝 연락처 커스텀 필드 테스트 실행 중..."
+              pytest tests/test_contact_custom_field.py -v --browser=chromium
               ;;
           esac
       

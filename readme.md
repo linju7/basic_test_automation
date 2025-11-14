@@ -22,6 +22,7 @@ basic_test_automation/
 │   │   └── usertype/         # 사용자 유형
 │   │   └── company_tag/      # 회사 태그
 │   │   └── my_tag/           # 마이 태그
+│   │   └── contact_custom_field/  # 연락처 커스텀 필드
 ├── tests/                   # 테스트 케이스
 │   ├── conftest.py          # pytest 설정 및 픽스처
 │   ├── test_contact.py      # 연락처 테스트
@@ -35,6 +36,7 @@ basic_test_automation/
 │   └── test_usertype.py     # 사용자 유형 테스트
 │   └── test_company_tag.py  # 회사 태그 테스트
 │   └── test_my_tag.py       # 마이 태그 테스트
+│   └── test_contact_custom_field.py  # 연락처 커스텀 필드 테스트
 ├── docker-compose.yml        # Docker 컨테이너 설정
 ├── Dockerfile               # Docker 이미지 설정
 ├── pytest.ini              # pytest 설정
