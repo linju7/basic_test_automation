@@ -132,6 +132,16 @@ def click_save_button(page):
     return False
 
 
+def save_to_app_state(app_state, custom_field_info):
+    """app_state에 생성된 값을 저장한다."""
+    if app_state is None:
+        return True
+    
+    app_state.contact_custom_field_name = custom_field_info["item_name"]
+    app_state.contact_custom_field_name_kr = custom_field_info["multilingual_fields"]["korean"]
+    return True
+
+
 # =====================
 # 메인 플로우 함수
 # =====================
@@ -142,9 +152,9 @@ def create_contact_custom_field(page, app_state=None):
     # 커스텀 필드 정보 생성
     custom_field_info = create_custom_field_info()
     
-    # app_state에 한국어 이름 저장 (UI에 표시되는 값)
-    if app_state is not None:
-        app_state.contact_custom_field_name = custom_field_info["multilingual_fields"]["korean"]
+    if not save_to_app_state(app_state, custom_field_info):
+        print("연락처 커스텀 필드 추가 자동화 실패 - save_to_app_state\n")
+        return False
     
     if not open_custom_field_page(page):
         print("연락처 커스텀 필드 추가 자동화 실패 - open_custom_field_page\n")
