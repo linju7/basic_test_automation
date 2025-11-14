@@ -31,6 +31,9 @@ class AppState:
         # 어드민에 표시되는 명은 대표명이고, 서비스는 다국명이라서 둘 다 저장함 
         self.contact_custom_field_name = None
         self.contact_custom_field_name_kr = None
+        
+        self.users_custom_field_name = None
+        self.users_custom_field_name_kr = None
     
 
 app_state = AppState()

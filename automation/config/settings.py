@@ -22,6 +22,12 @@ class Settings:
         "real": "https://admin.worksmobile.com/member/users"
     }
 
+    USERS_CUSTOM_FIELD_URLS = {
+        "alpha": "https://alpha-admin.worksmobile.com/member/users#fields",
+        "stage": "https://stage-admin.worksmobile.com/member/users#fields",
+        "real": "https://admin.worksmobile.com/member/users#fields"
+    }
+
     GROUP_URLS = {
         "alpha": "https://alpha-admin.worksmobile.com/member/groups",
         "stage": "https://stage-admin.worksmobile.com/member/groups",
