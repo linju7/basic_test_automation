@@ -71,8 +71,6 @@ def fill_usertype_fields(page, app_state=None):
     input_main = get_last_usertype_input(page)
     if input_main is not None:
         safe_fill_last(page, 'input.lw_input[placeholder="사용자 유형"]', usertype_name)
-        if app_state is not None:
-            app_state.usertype_name = usertype_name
     else:
         print("[실패] 사용자 유형명 입력란을 찾을 수 없음")
         return False
@@ -86,9 +84,13 @@ def fill_usertype_fields(page, app_state=None):
     }
     for lang, value in lang_map.items():
         input_lang = get_last_lang_input(page, lang)
+        
         if input_lang is not None:
             lang_selector = f'.lang_field:has(span.lang:text-is("{lang}")) input.lw_input'
             safe_fill_last(page, lang_selector, value)
+            if lang == "Korean":
+                if app_state is not None:
+                    app_state.usertype_name = value
         else:
             print(f"[실패] {lang} 입력란을 찾을 수 없음")
             return False

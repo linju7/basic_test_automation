@@ -57,8 +57,6 @@ def fill_level_fields(page, app_state=None):
     input_main = get_last_level_input(page)
     if input_main is not None:
         safe_fill_last(page, INPUT_LEVEL, level_name)
-        if app_state is not None:
-            app_state.level_name = level_name
     else:
         print("[실패] 직급명 입력란을 찾을 수 없음")
         return False
@@ -75,6 +73,9 @@ def fill_level_fields(page, app_state=None):
         if input_lang is not None:
             lang_selector = LANG_FIELD_TEMPLATE.format(lang=lang)
             safe_fill_last(page, lang_selector, value)
+            if lang == "Korean":
+                if app_state is not None:
+                    app_state.level_name = value
         else:
             print(f"[실패] {lang} 입력란을 찾을 수 없음")
             return False

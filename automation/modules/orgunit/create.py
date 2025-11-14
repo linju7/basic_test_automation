@@ -30,18 +30,21 @@ def fill_org_info(page, app_state=None):
     # 유니크한 값 세팅을 위해 현재 시간값 사용
     timestamp = datetime.now().strftime("%m%d%H%M")
     org_name = f"자동화조직_{timestamp}"
-    
     safe_fill(page, INPUT_ORG_NAME, org_name)
-    if app_state is not None:
-        app_state.org_name = org_name
     
+    
+    # 서비스에 표시될 때는 다국어로 표시되므로, 한국어명 저장 
+    value = f"자동화조직_KR_{timestamp}"
+    if app_state is not None:
+        app_state.org_name = value
+
     # 다국어 필드 입력
-    safe_fill(page, INPUT_ENGLISH, "AutoOrg_EN")
-    safe_fill(page, INPUT_KOREAN, "자동화조직_KR")
-    safe_fill(page, INPUT_CHINESE_TWN, "自動組織_TWN")
-    safe_fill(page, INPUT_JAPANESE, "自動組織_JP")
-    safe_fill(page, INPUT_CHINESE_CHN, "自动组织_CHN")
-    safe_fill(page, INPUT_DESCRIPTION, "자동화로 생성된 조직입니다.")
+    safe_fill(page, INPUT_ENGLISH, f"AutoOrg_EN_{timestamp}")
+    safe_fill(page, INPUT_KOREAN, value)
+    safe_fill(page, INPUT_CHINESE_TWN, f"自動組織_TWN_{timestamp}")
+    safe_fill(page, INPUT_JAPANESE, f"自動組織_JP_{timestamp}")
+    safe_fill(page, INPUT_CHINESE_CHN, f"自动组织_CHN_{timestamp}")
+    safe_fill(page, INPUT_DESCRIPTION, f"자동화로 생성된 조직입니다.{timestamp}")
     
     return True
 

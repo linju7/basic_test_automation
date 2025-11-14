@@ -64,8 +64,6 @@ def fill_position_fields(page, app_state=None):
     input_main = get_last_position_input(page)
     if input_main is not None:
         safe_fill_last(page, INPUT_POSITION, position_name)
-        if app_state is not None:
-            app_state.position_name = position_name
     else:
         return False
     
@@ -83,6 +81,9 @@ def fill_position_fields(page, app_state=None):
         if input_lang is not None:
             lang_selector = LANG_FIELD_TEMPLATE.format(lang=lang)
             safe_fill_last(page, lang_selector, value)
+            if lang == "Korean":
+                if app_state is not None:
+                    app_state.position_name = value
         else:
             return False
     
