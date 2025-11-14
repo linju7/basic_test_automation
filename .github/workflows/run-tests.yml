@@ -22,6 +22,7 @@ on:
           - '🏷️ 회사 태그 (Company Tag)'
           - '📍 MY 태그 (MY Tag)'
           - '📝 연락처 커스텀 필드 (Contact Custom Field)'
+          - '👨‍💼 구성원 커스텀 필드 (Users Custom Field)'
       
       instance:
         description: '🖥️ 인스턴스'
@@ -171,6 +172,10 @@ jobs:
             "📝 연락처 커스텀 필드 (Contact Custom Field)")
               echo "📝 연락처 커스텀 필드 테스트 실행 중..."
               pytest tests/test_contact_custom_field.py -v --browser=chromium
+              ;;
+            "👨‍💼 구성원 커스텀 필드 (Users Custom Field)")
+              echo "👨‍💼 구성원 커스텀 필드 테스트 실행 중..."
+              pytest tests/test_users_custom_field.py -v --browser=chromium
               ;;
           esac
       
